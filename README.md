@@ -7,6 +7,128 @@ A localization code generator compatible with the [Twine](https://github.com/sce
 > [!IMPORTANT]  
 > Twinex is under active development. Until version 1.0, breaking changes may occur in any release.
 
+## Usage
+
+### Installation
+
+```sh
+cargo install twinex
+```
+
+### Twine file format
+
+A Twine file is a plain text file containing sections and key-value definitions:
+
+```
+[[Section]]
+	[key]
+		comment = Description of the key
+		tags = ios,android
+		en = English translation
+		fr = French translation
+	[another_key]
+		ref = key
+		en = Translation
+```
+
+### Subcommands
+
+```
+twinex <COMMAND>
+
+Commands:
+  generate-localization-file       Generate a single localization file
+  generate-all-localization-files  Generate all localization files for a project
+  generate-localization-archive    Generate a zip archive of localization files
+  consume-localization-file        Consume translations from a localization file
+  consume-all-localization-files   Consume translations from a directory
+  consume-localization-archive     Consume translations from an archive
+  validate-twine-file              Validate that a Twine file is parseable
+```
+
+### Generate
+
+Generate localization files from a Twine file.
+
+```sh
+# Single file
+twinex generate-localization-file twine.txt output/strings.xml -f android -l ja,ko
+
+# All languages (default), one file per language
+twinex generate-all-localization-files twine.txt output/ -f apple -r
+
+# Zip archive
+twinex generate-localization-archive twine.txt output.zip -f apple -l en,fr,ja
+```
+
+**Generate options:**
+
+| Option | Description |
+|--------|-------------|
+| `-f, --format` | Output format: `apple`, `android`, `arb`, `django`, `flash`, `gettext`, `jquery` |
+| `-l, --lang` | Comma-separated list of languages to generate (defaults to all) |
+| `-d, --developer-language` | Override the developer language |
+| `-t, --tags` | Comma-separated list of tags to include in output |
+| `-u, --untagged` | Include untagged strings in output |
+| `-i, --include` | Filter: `all` (default), `translated`, `untranslated` |
+| `-e, --encoding` | Output file encoding (e.g. `UTF-16`, `UTF-16LE`) |
+| `--escape-all-tags` | Escape all HTML/XML tags in generated output |
+| `--validate` | Validate the Twine file before generating |
+| `-r, --create-folders` | (`generate-all` only) Create language-specific output directories |
+| `-n, --file-name` | (`generate-all` only) Custom output file name |
+
+### Consume
+
+Consume existing localization files back into a Twine file.
+
+```sh
+# Single file
+twinex consume-localization-file twine.txt ja.strings -l ja
+
+# All files in a directory
+twinex consume-all-localization-files twine.txt Resources/ -f apple
+
+# From a zip archive
+twinex consume-localization-archive twine.txt archive.zip
+```
+
+**Consume options:**
+
+| Option | Description |
+|--------|-------------|
+| `-f, --format` | Input format (auto-detected from extension if omitted) |
+| `-l, --lang` | Comma-separated list of languages to consume |
+| `-a, --consume-all` | Consume all translations, even if key doesn't exist in twine file |
+| `-c, --consume-comments` | Consume comments from the localization file |
+| `-d, --developer-language` | Override the developer language |
+| `-t, --tags` | Comma-separated list of tags to set on consumed definitions |
+| `-o, --output-file` | Write the updated twine data to a different file |
+| `-e, --encoding` | Input file encoding |
+
+### Validate
+
+Check that a Twine file is well-formed and optionally enforce naming conventions.
+
+```sh
+# Basic validation (parse errors)
+twinex validate-twine-file twine.txt
+
+# Pedantic mode — keys must match ^[A-Za-z0-9_]+$
+twinex validate-twine-file twine.txt -p
+```
+
+### Supported formats
+
+| Format | Extension | Description |
+|--------|-----------|-------------|
+| `apple` | `.strings` | Apple/iOS `.strings` files |
+| `android` | `.xml` | Android `res/values/strings.xml` |
+| `arb` | `.arb` | Flutter/Dart ARB (Application Resource Bundle) |
+| `django` | `.po` | Django `.po` files |
+| `flash` | `.properties` | Flash `.properties` files |
+| `gettext` | `.po` | GNU Gettext `.po` files |
+| `jquery` | `.json` | jQuery i18n `.json` files |
+
 ## License
 
     Copyright 2026 shenghaiyang
