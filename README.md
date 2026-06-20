@@ -12,7 +12,7 @@ A localization code generator compatible with the [Twine](https://github.com/sce
 ### Installation
 
 ```sh
-cargo install twinex
+cargo install twinex-cli
 ```
 
 ### Twine file format
