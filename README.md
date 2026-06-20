@@ -2,6 +2,14 @@
 
 A localization code generator compatible with the [Twine](https://github.com/scelis/twine) file format, implemented in Rust.
 
+[![Crates.io][crates-badge]][crates-url]
+[![License][license-badge]][license-url]
+
+[crates-badge]: https://img.shields.io/crates/v/twinex-cli.svg
+[crates-url]: https://crates.io/crates/twinex-cli
+[license-badge]: https://img.shields.io/badge/license-Apache%202.0-blue.svg
+[license-url]: https://github.com/shenghaiyang/twinex/blob/trunk/LICENSE
+
 ## Status
 
 > [!IMPORTANT]  
