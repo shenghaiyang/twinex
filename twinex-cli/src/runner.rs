@@ -29,47 +29,49 @@ pub fn run(args: CliArgs) -> anyhow::Result<()> {
 
     match args.command.as_str() {
         "generate-localization-file" => {
-            let output = args.output_path.as_ref().ok_or_else(|| {
-                TwinexError::InvalidArgument("Missing output path".into())
-            })?;
+            let output = args
+                .output_path
+                .as_ref()
+                .ok_or_else(|| TwinexError::InvalidArgument("Missing output path".into()))?;
             Ok(cmd_generate_file(&args, &twine_file, &options, output)?)
         }
         "generate-all-localization-files" => {
-            let output = args.output_path.as_ref().ok_or_else(|| {
-                TwinexError::InvalidArgument("Missing output path".into())
-            })?;
+            let output = args
+                .output_path
+                .as_ref()
+                .ok_or_else(|| TwinexError::InvalidArgument("Missing output path".into()))?;
             Ok(cmd_generate_all(&args, &twine_file, &options, output)?)
         }
         "generate-localization-archive" => {
-            let output = args.output_path.as_ref().ok_or_else(|| {
-                TwinexError::InvalidArgument("Missing output path".into())
-            })?;
+            let output = args
+                .output_path
+                .as_ref()
+                .ok_or_else(|| TwinexError::InvalidArgument("Missing output path".into()))?;
             Ok(cmd_generate_archive(&args, &twine_file, &options, output)?)
         }
         "consume-localization-file" => {
-            let input = args.input_path.as_ref().ok_or_else(|| {
-                TwinexError::InvalidArgument("Missing input path".into())
-            })?;
+            let input = args
+                .input_path
+                .as_ref()
+                .ok_or_else(|| TwinexError::InvalidArgument("Missing input path".into()))?;
             Ok(cmd_consume_file(&args, &mut twine_file, input)?)
         }
         "consume-all-localization-files" => {
-            let input = args.input_path.as_ref().ok_or_else(|| {
-                TwinexError::InvalidArgument("Missing input path".into())
-            })?;
+            let input = args
+                .input_path
+                .as_ref()
+                .ok_or_else(|| TwinexError::InvalidArgument("Missing input path".into()))?;
             Ok(cmd_consume_all(&args, &mut twine_file, input)?)
         }
         "consume-localization-archive" => {
-            let input = args.input_path.as_ref().ok_or_else(|| {
-                TwinexError::InvalidArgument("Missing input path".into())
-            })?;
+            let input = args
+                .input_path
+                .as_ref()
+                .ok_or_else(|| TwinexError::InvalidArgument("Missing input path".into()))?;
             Ok(cmd_consume_archive(&args, &mut twine_file, input)?)
         }
         "validate-twine-file" => Ok(cmd_validate(&args, &twine_file)?),
-        _ => Err(TwinexError::InvalidArgument(format!(
-            "Unknown command: {}",
-            args.command
-        ))
-        .into()),
+        _ => Err(TwinexError::InvalidArgument(format!("Unknown command: {}", args.command)).into()),
     }
 }
 
@@ -134,7 +136,10 @@ fn cmd_generate_all(
     }
 
     let formatter = resolve_formatter(args.format.as_deref(), Some(output_path), None)?;
-    let file_name = args.file_name.as_deref().unwrap_or(formatter.default_file_name());
+    let file_name = args
+        .file_name
+        .as_deref()
+        .unwrap_or(formatter.default_file_name());
 
     if args.create_folders {
         for lang in &twine_file.language_codes {
@@ -196,10 +201,7 @@ fn generate_one_file(
         }
         None => {
             if !args.quiet {
-                println!(
-                    "Skipping {} — would be empty.",
-                    output.display()
-                );
+                println!("Skipping {} — would be empty.", output.display());
             }
         }
     }
@@ -254,11 +256,7 @@ fn cmd_generate_archive(
 
 // ── Consume ───────────────────────────────────────────────────
 
-fn cmd_consume_file(
-    args: &CliArgs,
-    twine_file: &mut TwineFile,
-    input_path: &str,
-) -> Result<()> {
+fn cmd_consume_file(args: &CliArgs, twine_file: &mut TwineFile, input_path: &str) -> Result<()> {
     let lang = args.languages.first().map(|s| s.as_str());
     read_localization_file(args, twine_file, input_path, lang)?;
     let out = args.output_path.as_deref().unwrap_or(&args.twine_file);
@@ -266,11 +264,7 @@ fn cmd_consume_file(
     Ok(())
 }
 
-fn cmd_consume_all(
-    args: &CliArgs,
-    twine_file: &mut TwineFile,
-    input_path: &str,
-) -> Result<()> {
+fn cmd_consume_all(args: &CliArgs, twine_file: &mut TwineFile, input_path: &str) -> Result<()> {
     if !Path::new(input_path).is_dir() {
         return Err(TwinexError::InvalidArgument(format!(
             "Directory does not exist: {}",
@@ -298,11 +292,7 @@ fn visit_dirs(dir: &Path, args: &CliArgs, twine_file: &mut TwineFile) -> Result<
     Ok(())
 }
 
-fn cmd_consume_archive(
-    args: &CliArgs,
-    twine_file: &mut TwineFile,
-    input_path: &str,
-) -> Result<()> {
+fn cmd_consume_archive(args: &CliArgs, twine_file: &mut TwineFile, input_path: &str) -> Result<()> {
     if !Path::new(input_path).is_file() {
         return Err(TwinexError::InvalidArgument(format!(
             "File does not exist: {}",
@@ -377,9 +367,11 @@ fn validate_twine_file(twine_file: &TwineFile, pedantic: bool) -> Result<()> {
             if !valid_key.is_match(def.key.as_str()) {
                 invalid.insert(def.key.clone());
             }
-            if def.translations.values().any(|v| {
-                crate::placeholders::contains_python_specific_placeholder(v)
-            }) {
+            if def
+                .translations
+                .values()
+                .any(|v| crate::placeholders::contains_python_specific_placeholder(v))
+            {
                 python_placeholders.insert(def.key.clone());
             }
         }
@@ -389,7 +381,11 @@ fn validate_twine_file(twine_file: &TwineFile, pedantic: bool) -> Result<()> {
     if !dupes.is_empty() {
         errors.push(format!(
             "Found duplicate key(s):\n{}",
-            dupes.iter().map(|k| format!("  {}", k)).collect::<Vec<_>>().join("\n")
+            dupes
+                .iter()
+                .map(|k| format!("  {}", k))
+                .collect::<Vec<_>>()
+                .join("\n")
         ));
     }
     if pedantic {
@@ -398,14 +394,22 @@ fn validate_twine_file(twine_file: &TwineFile, pedantic: bool) -> Result<()> {
         } else if !no_tags.is_empty() {
             errors.push(format!(
                 "Found definitions without tags:\n{}",
-                no_tags.iter().map(|k| format!("  {}", k)).collect::<Vec<_>>().join("\n")
+                no_tags
+                    .iter()
+                    .map(|k| format!("  {}", k))
+                    .collect::<Vec<_>>()
+                    .join("\n")
             ));
         }
     }
     if !invalid.is_empty() {
         errors.push(format!(
             "Found key(s) with invalid characters:\n{}",
-            invalid.iter().map(|k| format!("  {}", k)).collect::<Vec<_>>().join("\n")
+            invalid
+                .iter()
+                .map(|k| format!("  {}", k))
+                .collect::<Vec<_>>()
+                .join("\n")
         ));
     }
     if !python_placeholders.is_empty() {
@@ -432,9 +436,7 @@ fn resolve_formatter(
     _lang: Option<&str>,
 ) -> Result<Box<dyn crate::format::Formatter>> {
     Registry::detect(name, path).ok_or_else(|| {
-        TwinexError::InvalidArgument(
-            "Unable to determine format. Use --format to specify.".into(),
-        )
+        TwinexError::InvalidArgument("Unable to determine format. Use --format to specify.".into())
     })
 }
 
@@ -461,8 +463,7 @@ fn read_localization_from_content(
     content: &str,
 ) -> Result<()> {
     let lang = args.languages.first().map(|s| s.as_str());
-    let formatter =
-        resolve_formatter(args.format.as_deref(), Some(path), lang)?;
+    let formatter = resolve_formatter(args.format.as_deref(), Some(path), lang)?;
     let lang = lang
         .map(|l| l.to_string())
         .or_else(|| formatter.detect_language(path))
@@ -473,7 +474,10 @@ fn read_localization_from_content(
             ))
         })?;
 
-    if !twine_file.language_codes.contains(&crate::model::Lang::new(&lang)) {
+    if !twine_file
+        .language_codes
+        .contains(&crate::model::Lang::new(&lang))
+    {
         twine_file.add_language(&crate::model::Lang::new(&lang));
     }
     formatter.read(content, &lang, twine_file)
@@ -495,14 +499,18 @@ fn read_file_with_encoding(path: &str, encoding: Option<&str>) -> Result<String>
         "UTF-8" | "UTF8" => Ok(String::from_utf8(content.to_vec())
             .map_err(|e| TwinexError::Format(format!("Invalid UTF-8: {}", e)))?),
         "UTF-16BE" | "UTF16BE" => {
-            let u16: Vec<u16> = content.chunks(2).map(|c| u16::from_be_bytes([c[0], c[1]])).collect();
-            String::from_utf16(&u16)
-                .map_err(|_| TwinexError::Format("Invalid UTF-16".into()))
+            let u16: Vec<u16> = content
+                .chunks(2)
+                .map(|c| u16::from_be_bytes([c[0], c[1]]))
+                .collect();
+            String::from_utf16(&u16).map_err(|_| TwinexError::Format("Invalid UTF-16".into()))
         }
         "UTF-16LE" | "UTF16LE" => {
-            let u16: Vec<u16> = content.chunks(2).map(|c| u16::from_le_bytes([c[0], c[1]])).collect();
-            String::from_utf16(&u16)
-                .map_err(|_| TwinexError::Format("Invalid UTF-16".into()))
+            let u16: Vec<u16> = content
+                .chunks(2)
+                .map(|c| u16::from_le_bytes([c[0], c[1]]))
+                .collect();
+            String::from_utf16(&u16).map_err(|_| TwinexError::Format("Invalid UTF-16".into()))
         }
         _ => Ok(String::from_utf8(content.to_vec())
             .map_err(|e| TwinexError::Format(format!("Invalid encoding: {}", e)))?),

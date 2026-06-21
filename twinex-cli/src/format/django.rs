@@ -52,8 +52,17 @@ impl Formatter for DjangoFormatter {
         Ok(())
     }
 
-    fn format(&self, lang: &str, twine_file: &TwineFile, options: &FormatOptions) -> Result<Option<String>> {
-        let default_lang = twine_file.language_codes.first().cloned().unwrap_or_default();
+    fn format(
+        &self,
+        lang: &str,
+        twine_file: &TwineFile,
+        options: &FormatOptions,
+    ) -> Result<Option<String>> {
+        let default_lang = twine_file
+            .language_codes
+            .first()
+            .cloned()
+            .unwrap_or_default();
         let processor = OutputProcessor::new(twine_file.clone(), options.clone());
         let processed = processor.process(lang);
 
@@ -82,7 +91,11 @@ impl Formatter for DjangoFormatter {
                 if let Some(base) = def.translations.get(&default_lang) {
                     out.push_str(&format!("# base translation: \"{}\"\n", base));
                 }
-                let value = def.translations.get(&Lang::new(lang)).map(|s| s.as_str()).unwrap_or("");
+                let value = def
+                    .translations
+                    .get(&Lang::new(lang))
+                    .map(|s| s.as_str())
+                    .unwrap_or("");
                 out.push_str(&format!(
                     "msgid \"{}\"\nmsgstr \"{}\"\n",
                     format::escape_quotes(def.key.as_str()),
@@ -91,6 +104,10 @@ impl Formatter for DjangoFormatter {
                 has_content = true;
             }
         }
-        if has_content { Ok(Some(out)) } else { Ok(None) }
+        if has_content {
+            Ok(Some(out))
+        } else {
+            Ok(None)
+        }
     }
 }

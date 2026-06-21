@@ -29,7 +29,11 @@ impl Formatter for AppleFormatter {
         for segment in path.split('/') {
             if let Some(caps) = re.captures(segment) {
                 let lang = caps.get(1)?.as_str();
-                return if lang == "Base" { None } else { Some(lang.to_string()) };
+                return if lang == "Base" {
+                    None
+                } else {
+                    Some(lang.to_string())
+                };
             }
         }
         None
@@ -68,7 +72,12 @@ impl Formatter for AppleFormatter {
         Ok(())
     }
 
-    fn format(&self, lang: &str, twine_file: &TwineFile, options: &FormatOptions) -> Result<Option<String>> {
+    fn format(
+        &self,
+        lang: &str,
+        twine_file: &TwineFile,
+        options: &FormatOptions,
+    ) -> Result<Option<String>> {
         let processor = OutputProcessor::new(twine_file.clone(), options.clone());
         let processed = processor.process(lang);
 
@@ -89,11 +98,19 @@ impl Formatter for AppleFormatter {
                 if let Some(ref comment) = def.comment {
                     out.push_str(&format!("/* {} */\n", comment.replace("*/", "* /")));
                 }
-                let value = def.translations.get(&Lang::new(lang)).map(|s| s.as_str()).unwrap_or("");
+                let value = def
+                    .translations
+                    .get(&Lang::new(lang))
+                    .map(|s| s.as_str())
+                    .unwrap_or("");
                 out.push_str(&format!("\"{}\" = \"{}\";\n", def.key, value));
                 has_content = true;
             }
         }
-        if has_content { Ok(Some(out)) } else { Ok(None) }
+        if has_content {
+            Ok(Some(out))
+        } else {
+            Ok(None)
+        }
     }
 }

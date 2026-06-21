@@ -31,7 +31,12 @@ impl Formatter for JQueryFormatter {
         Ok(())
     }
 
-    fn format(&self, lang: &str, twine_file: &TwineFile, options: &FormatOptions) -> Result<Option<String>> {
+    fn format(
+        &self,
+        lang: &str,
+        twine_file: &TwineFile,
+        options: &FormatOptions,
+    ) -> Result<Option<String>> {
         let processor = OutputProcessor::new(twine_file.clone(), options.clone());
         let processed = processor.process(lang);
 
@@ -40,7 +45,11 @@ impl Formatter for JQueryFormatter {
             .iter()
             .flat_map(|s| &s.definitions)
             .map(|def| {
-                let value = def.translations.get(&Lang::new(lang)).map(|s| s.as_str()).unwrap_or("");
+                let value = def
+                    .translations
+                    .get(&Lang::new(lang))
+                    .map(|s| s.as_str())
+                    .unwrap_or("");
                 format!(
                     "\"{}\":\"{}\"",
                     json_escape(def.key.as_str()),

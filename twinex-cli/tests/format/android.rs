@@ -52,10 +52,7 @@ fn test_android_detect_language() {
         formatter.detect_language("res/values-fr/strings.xml"),
         Some("fr".to_string())
     );
-    assert_eq!(
-        formatter.detect_language("res/values/strings.xml"),
-        None
-    );
+    assert_eq!(formatter.detect_language("res/values/strings.xml"), None);
 }
 
 #[test]
@@ -68,8 +65,7 @@ fn test_android_output_dir() {
 
 #[test]
 fn test_android_read_with_html_entities() {
-    let content =
-        r#"<string name="welcome">Welcome to &lt;b&gt;Android&lt;/b&gt;</string>"#;
+    let content = r#"<string name="welcome">Welcome to &lt;b&gt;Android&lt;/b&gt;</string>"#;
     let mut tf = TwineFile::new();
     let formatter = Registry::get("android").unwrap();
     formatter.read(content, "en", &mut tf).unwrap();

@@ -88,7 +88,9 @@ fn test_generate_android_and_consume_back() {
 fn test_multiple_formats() {
     let tf = make_twine_file();
 
-    let formats = ["apple", "android", "arb", "gettext", "jquery", "django", "flash"];
+    let formats = [
+        "apple", "android", "arb", "gettext", "jquery", "django", "flash",
+    ];
     for fmt_name in &formats {
         let formatter = Registry::get(fmt_name).unwrap();
         let output = fmt_output(&*formatter, "en", &tf, &default_options());
@@ -118,11 +120,7 @@ fn test_multiple_formats() {
 fn test_validate_twine_file() {
     let dir = unique_dir();
 
-    let valid_path = write_temp_file(
-        &dir,
-        "valid.txt",
-        "[[Section]]\n\t[key1]\n\t\ten = Value\n",
-    );
+    let valid_path = write_temp_file(&dir, "valid.txt", "[[Section]]\n\t[key1]\n\t\ten = Value\n");
 
     let mut tf = TwineFile::new();
     assert!(tf.read_from_path(valid_path.to_str().unwrap()).is_ok());
@@ -135,11 +133,7 @@ fn test_validate_twine_file() {
     let mut tf2 = TwineFile::new();
     assert!(tf2.read_from_path(dup_path.to_str().unwrap()).is_ok());
 
-    let all_keys: Vec<_> = tf2.sections[0]
-        .definitions
-        .iter()
-        .map(|d| &d.key)
-        .collect();
+    let all_keys: Vec<_> = tf2.sections[0].definitions.iter().map(|d| &d.key).collect();
     let mut unique = HashSet::new();
     let dupes: Vec<_> = all_keys.iter().filter(|k| !unique.insert(*k)).collect();
     assert!(!dupes.is_empty());
@@ -226,7 +220,10 @@ fn test_empty_output_returns_none() {
     tf.sections.push(section);
 
     let formatter = Registry::get("apple").unwrap();
-    assert!(formatter.format("en", &tf, &default_options()).unwrap().is_none());
+    assert!(formatter
+        .format("en", &tf, &default_options())
+        .unwrap()
+        .is_none());
 }
 
 #[test]

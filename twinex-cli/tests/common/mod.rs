@@ -35,16 +35,21 @@ pub fn make_twine_file() -> TwineFile {
     let mut def1 = Definition::new("hello");
     def1.comment = Some("A greeting".to_string());
     def1.tags = vec!["greeting".to_string()];
-    def1.translations.insert(Lang::new("en"), "Hello".to_string());
-    def1.translations.insert(Lang::new("fr"), "Bonjour".to_string());
-    def1.translations.insert(Lang::new("ja"), "こんにちは".to_string());
+    def1.translations
+        .insert(Lang::new("en"), "Hello".to_string());
+    def1.translations
+        .insert(Lang::new("fr"), "Bonjour".to_string());
+    def1.translations
+        .insert(Lang::new("ja"), "こんにちは".to_string());
     section.definitions.push(def1);
 
     let mut def2 = Definition::new("goodbye");
     def2.comment = Some("A farewell".to_string());
     def2.tags = vec!["farewell".to_string()];
-    def2.translations.insert(Lang::new("en"), "Goodbye".to_string());
-    def2.translations.insert(Lang::new("fr"), "Au revoir".to_string());
+    def2.translations
+        .insert(Lang::new("en"), "Goodbye".to_string());
+    def2.translations
+        .insert(Lang::new("fr"), "Au revoir".to_string());
     section.definitions.push(def2);
 
     tf.sections.push(section);

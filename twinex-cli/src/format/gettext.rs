@@ -59,8 +59,17 @@ impl Formatter for GettextFormatter {
         Ok(())
     }
 
-    fn format(&self, lang: &str, twine_file: &TwineFile, options: &FormatOptions) -> Result<Option<String>> {
-        let default_lang = twine_file.language_codes.first().cloned().unwrap_or_default();
+    fn format(
+        &self,
+        lang: &str,
+        twine_file: &TwineFile,
+        options: &FormatOptions,
+    ) -> Result<Option<String>> {
+        let default_lang = twine_file
+            .language_codes
+            .first()
+            .cloned()
+            .unwrap_or_default();
         let processor = OutputProcessor::new(twine_file.clone(), options.clone());
         let processed = processor.process(lang);
 
@@ -84,8 +93,16 @@ impl Formatter for GettextFormatter {
                 if let Some(ref comment) = def.comment {
                     out.push_str(&format!("#. \"{}\"\n", format::escape_quotes(comment)));
                 }
-                let value = def.translations.get(&Lang::new(lang)).map(|s| s.as_str()).unwrap_or("");
-                let base = def.translations.get(&default_lang).map(|s| s.as_str()).unwrap_or("");
+                let value = def
+                    .translations
+                    .get(&Lang::new(lang))
+                    .map(|s| s.as_str())
+                    .unwrap_or("");
+                let base = def
+                    .translations
+                    .get(&default_lang)
+                    .map(|s| s.as_str())
+                    .unwrap_or("");
                 out.push_str(&format!(
                     "msgctxt \"{}\"\nmsgid \"{}\"\nmsgstr \"{}\"\n",
                     format::escape_quotes(def.key.as_str()),
@@ -95,6 +112,10 @@ impl Formatter for GettextFormatter {
                 has_content = true;
             }
         }
-        if has_content { Ok(Some(out)) } else { Ok(None) }
+        if has_content {
+            Ok(Some(out))
+        } else {
+            Ok(None)
+        }
     }
 }

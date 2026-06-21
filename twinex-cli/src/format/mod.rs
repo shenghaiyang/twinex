@@ -40,7 +40,12 @@ pub trait Formatter: Send + Sync {
     }
 
     /// Read translations from file content into a TwineFile.
-    fn read(&self, content: &str, lang: &str, twine_file: &mut TwineFile) -> crate::error::Result<()>;
+    fn read(
+        &self,
+        content: &str,
+        lang: &str,
+        twine_file: &mut TwineFile,
+    ) -> crate::error::Result<()>;
 
     /// Format a TwineFile into this format's output for a given language.
     fn format(
@@ -163,11 +168,19 @@ impl Registry {
                 factories: HashMap::new(),
             };
             reg.register("apple", || Box::new(crate::format::apple::AppleFormatter));
-            reg.register("android", || Box::new(crate::format::android::AndroidFormatter));
+            reg.register("android", || {
+                Box::new(crate::format::android::AndroidFormatter)
+            });
             reg.register("arb", || Box::new(crate::format::arb::ArbFormatter));
-            reg.register("gettext", || Box::new(crate::format::gettext::GettextFormatter));
-            reg.register("jquery", || Box::new(crate::format::jquery::JQueryFormatter));
-            reg.register("django", || Box::new(crate::format::django::DjangoFormatter));
+            reg.register("gettext", || {
+                Box::new(crate::format::gettext::GettextFormatter)
+            });
+            reg.register("jquery", || {
+                Box::new(crate::format::jquery::JQueryFormatter)
+            });
+            reg.register("django", || {
+                Box::new(crate::format::django::DjangoFormatter)
+            });
             reg.register("flash", || Box::new(crate::format::flash::FlashFormatter));
             reg
         })
@@ -188,7 +201,11 @@ impl Registry {
 
     /// List all registered formatter names.
     pub fn names() -> Vec<&'static str> {
-        Self::global().factories.keys().map(|s| s.as_str()).collect()
+        Self::global()
+            .factories
+            .keys()
+            .map(|s| s.as_str())
+            .collect()
     }
 
     /// Find a formatter by extension.

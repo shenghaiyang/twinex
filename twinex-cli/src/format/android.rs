@@ -76,7 +76,12 @@ impl Formatter for AndroidFormatter {
         Ok(())
     }
 
-    fn format(&self, lang: &str, twine_file: &TwineFile, options: &FormatOptions) -> Result<Option<String>> {
+    fn format(
+        &self,
+        lang: &str,
+        twine_file: &TwineFile,
+        options: &FormatOptions,
+    ) -> Result<Option<String>> {
         let processor = OutputProcessor::new(twine_file.clone(), options.clone());
         let processed = processor.process(lang);
 
@@ -101,9 +106,16 @@ impl Formatter for AndroidFormatter {
                 if let Some(ref comment) = def.comment {
                     out.push_str(&format!("\t<!-- {} -->\n", comment.replace("--", "—")));
                 }
-                let value = def.translations.get(&Lang::new(lang)).map(|s| s.as_str()).unwrap_or("");
+                let value = def
+                    .translations
+                    .get(&Lang::new(lang))
+                    .map(|s| s.as_str())
+                    .unwrap_or("");
                 let escaped = xml_escape(value);
-                out.push_str(&format!("\t<string name=\"{}\">{}</string>\n", def.key, escaped));
+                out.push_str(&format!(
+                    "\t<string name=\"{}\">{}</string>\n",
+                    def.key, escaped
+                ));
                 has_content = true;
             }
         }

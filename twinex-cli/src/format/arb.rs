@@ -1,7 +1,7 @@
 use crate::error::Result;
 use crate::format::{self, FormatOptions, Formatter};
-use crate::output::OutputProcessor;
 use crate::model::{Lang, TwineFile};
+use crate::output::OutputProcessor;
 use serde_json::{Map, Value};
 
 pub struct ArbFormatter;
@@ -20,9 +20,7 @@ impl Formatter for ArbFormatter {
     }
 
     fn detect_language(&self, path: &str) -> Option<String> {
-        let basename = std::path::Path::new(path)
-            .file_stem()?
-            .to_str()?;
+        let basename = std::path::Path::new(path).file_stem()?.to_str()?;
         // Extract language from filename like "intl_en" or "app_fr"
         let re = regex::Regex::new(r".*_([a-z]{2}(?:-[A-Z]{2})?)$").unwrap();
         re.captures(basename).map(|c| c[1].to_string())
@@ -83,14 +81,8 @@ impl Formatter for ArbFormatter {
 
                 if let Some(ref comment) = def.comment {
                     let mut meta = Map::new();
-                    meta.insert(
-                        "description".to_string(),
-                        Value::String(comment.clone()),
-                    );
-                    map.insert(
-                        format!("@{}", def.key.as_str()),
-                        Value::Object(meta),
-                    );
+                    meta.insert("description".to_string(), Value::String(comment.clone()));
+                    map.insert(format!("@{}", def.key.as_str()), Value::Object(meta));
                 }
             }
         }
@@ -100,10 +92,9 @@ impl Formatter for ArbFormatter {
             return Ok(None);
         }
 
-        let output = serde_json::to_string_pretty(&Value::Object(map))
-            .map_err(|e| {
-                crate::error::TwinexError::Format(format!("ARB serialization error: {}", e))
-            })?;
+        let output = serde_json::to_string_pretty(&Value::Object(map)).map_err(|e| {
+            crate::error::TwinexError::Format(format!("ARB serialization error: {}", e))
+        })?;
 
         Ok(Some(output + "\n"))
     }
