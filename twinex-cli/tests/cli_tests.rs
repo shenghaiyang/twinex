@@ -1,11 +1,11 @@
 use clap::Parser;
-use twinex_cli::cli::Cli;
+use twinex_cli::cli::{CliArgs, Command};
 
 #[test]
 fn test_parse_generate_localization_file() {
-    let cli = Cli::try_parse_from(vec![
+    let args = CliArgs::try_parse_from(vec![
         "twinex",
-        "generate-localization-file",
+        "generate",
         "twine.txt",
         "output.xml",
         "--tags",
@@ -17,49 +17,68 @@ fn test_parse_generate_localization_file() {
     ])
     .unwrap();
 
-    let args = twinex_cli::cli::CliArgs::from(cli);
-    assert_eq!(args.command, "generate-localization-file");
-    assert_eq!(args.twine_file, "twine.txt");
-    assert_eq!(args.output_path.unwrap(), "output.xml");
-    assert_eq!(args.format.unwrap(), "android");
-    assert_eq!(args.languages, vec!["ko"]);
+    let Command::Generate {
+        twine_file,
+        output_path,
+        gen,
+        languages,
+        ..
+    } = args.command
+    else {
+        panic!("Expected Generate command");
+    };
+
+    assert_eq!(twine_file, "twine.txt");
+    assert_eq!(output_path, "output.xml");
+    assert_eq!(gen.format.unwrap(), "android");
+    assert_eq!(languages, vec!["ko"]);
 }
 
 #[test]
 fn test_validate_twine_file() {
-    let cli = Cli::try_parse_from(vec![
-        "twinex",
-        "validate-twine-file",
-        "twine.txt",
-        "--pedantic",
-    ])
-    .unwrap();
+    let args =
+        CliArgs::try_parse_from(vec!["twinex", "validate", "twine.txt", "--pedantic"]).unwrap();
 
-    let args = twinex_cli::cli::CliArgs::from(cli);
-    assert_eq!(args.command, "validate-twine-file");
-    assert_eq!(args.twine_file, "twine.txt");
-    assert!(args.pedantic);
+    let Command::Validate {
+        twine_file,
+        pedantic,
+        ..
+    } = args.command
+    else {
+        panic!("Expected Validate command");
+    };
+
+    assert_eq!(twine_file, "twine.txt");
+    assert!(pedantic);
 }
 
 #[test]
 fn test_parse_consume_localization_file() {
-    let cli = Cli::try_parse_from(vec![
+    let args = CliArgs::try_parse_from(vec![
         "twinex",
-        "consume-localization-file",
+        "consume",
         "twine.txt",
         "ja.strings",
-        "-a",
         "-c",
+        "-m",
         "-o",
         "twine_out.txt",
     ])
     .unwrap();
 
-    let args = twinex_cli::cli::CliArgs::from(cli);
-    assert_eq!(args.command, "consume-localization-file");
-    assert_eq!(args.twine_file, "twine.txt");
-    assert_eq!(args.input_path.unwrap(), "ja.strings");
-    assert!(args.consume_all);
-    assert!(args.consume_comments);
-    assert_eq!(args.output_path.unwrap(), "twine_out.txt");
+    let Command::Consume {
+        twine_file,
+        input_path,
+        con,
+        ..
+    } = args.command
+    else {
+        panic!("Expected Consume command");
+    };
+
+    assert_eq!(twine_file, "twine.txt");
+    assert_eq!(input_path, "ja.strings");
+    assert!(con.consume_all);
+    assert!(con.consume_comments);
+    assert_eq!(con.output_path.unwrap(), "twine_out.txt");
 }

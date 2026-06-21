@@ -6,7 +6,9 @@ use std::path::Path;
 
 use serde::{Deserialize, Serialize};
 
-use crate::error::{Result, TwinexError};
+use crate::error::Result;
+
+use crate::error::TwinexError;
 
 // ── Newtype wrappers ──────────────────────────────────────────
 
@@ -192,8 +194,9 @@ impl TwineFile {
     /// Parse a Twine data file from disk.
     pub fn read_from_path<P: AsRef<Path>>(&mut self, path: P) -> Result<()> {
         let path = path.as_ref();
-        let file = fs::File::open(path)
-            .map_err(|e| TwinexError::FileNotFound(format!("{}: {}", path.display(), e)))?;
+        let file = fs::File::open(path).map_err(|e| {
+            TwinexError::Io(std::io::Error::other(format!("{}: {}", path.display(), e)))
+        })?;
         let reader = BufReader::new(file);
         self.read(reader, &path.display().to_string())
     }
