@@ -1,4 +1,6 @@
 use crate::error::Result;
+
+use crate::error::TwinexError;
 use crate::format::{self, FormatOptions, Formatter};
 use crate::model::{Lang, TwineFile};
 use crate::output::OutputProcessor;
@@ -28,11 +30,11 @@ impl Formatter for ArbFormatter {
 
     fn read(&self, content: &str, lang: &str, twine_file: &mut TwineFile) -> Result<()> {
         let json: Value = serde_json::from_str(content)
-            .map_err(|e| crate::error::TwinexError::Format(format!("Invalid ARB JSON: {}", e)))?;
+            .map_err(|e| TwinexError::Format(format!("Invalid ARB JSON: {}", e)))?;
 
-        let obj = json.as_object().ok_or_else(|| {
-            crate::error::TwinexError::Format("ARB root must be a JSON object".into())
-        })?;
+        let obj = json
+            .as_object()
+            .ok_or_else(|| TwinexError::Format("ARB root must be a JSON object".into()))?;
 
         for (key, value) in obj {
             // Skip metadata keys (starting with @)
@@ -92,9 +94,8 @@ impl Formatter for ArbFormatter {
             return Ok(None);
         }
 
-        let output = serde_json::to_string_pretty(&Value::Object(map)).map_err(|e| {
-            crate::error::TwinexError::Format(format!("ARB serialization error: {}", e))
-        })?;
+        let output = serde_json::to_string_pretty(&Value::Object(map))
+            .map_err(|e| TwinexError::Format(format!("ARB serialization error: {}", e)))?;
 
         Ok(Some(output + "\n"))
     }
