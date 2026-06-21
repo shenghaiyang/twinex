@@ -4,14 +4,19 @@ A localization code generator compatible with the [Twine](https://github.com/sce
 
 [![Crates.io][crates-badge]][crates-url]
 [![License][license-badge]][license-url]
-[![Docs Build Status][docs-build-badge]][docs-build-url]
+[![Docs][docs-action-badge]][docs-action-url]
+[![CI][ci-action-badge]][ci-action-url]
 
 [crates-badge]: https://img.shields.io/crates/v/twinex-cli.svg
 [crates-url]: https://crates.io/crates/twinex-cli
 [license-badge]: https://img.shields.io/badge/license-Apache%202.0-blue.svg
 [license-url]: https://github.com/shenghaiyang/twinex/blob/trunk/LICENSE
-[docs-build-badge]: https://github.com/shenghaiyang/twinex/actions/workflows/docs.yml/badge.svg
-[docs-build-url]: https://github.com/shenghaiyang/twinex/actions/workflows/docs.yml
+[docs-action-badge]: https://github.com/shenghaiyang/twinex/actions/workflows/docs.yml/badge.svg
+[docs-action-url]: https://github.com/shenghaiyang/twinex/actions/workflows/docs.yml
+[ci-action-badge]: https://github.com/shenghaiyang/twinex/actions/workflows/ci.yml/badge.svg
+[ci-action-url]: https://github.com/shenghaiyang/twinex/actions/workflows/ci.yml
+
+---
 
 ## Status
 
