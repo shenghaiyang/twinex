@@ -390,7 +390,8 @@ impl<W: Write> Write for BufWriter<W> {
 }
 
 fn write_value(w: &mut impl Write, lang: &Lang, value: &str) {
-    let formatted = if value.starts_with(' ') || value.ends_with(' ')
+    let formatted = if value.starts_with(' ')
+        || value.ends_with(' ')
         || (value.starts_with('`') && value.ends_with('`'))
     {
         format!("`{}`", value)

@@ -1,8 +1,7 @@
 use regex::Regex;
 use std::sync::OnceLock;
 
-const PLACEHOLDER_FLAGS: &str =
-    r"([-+0#])?(\d+|\*)?(\.(\d+|\*))?(hh?|ll?|L|z|j|t|q)?";
+const PLACEHOLDER_FLAGS: &str = r"([-+0#])?(\d+|\*)?(\.(\d+|\*))?(hh?|ll?|L|z|j|t|q)?";
 const PLACEHOLDER_PARAMETER_FLAGS_WIDTH_PRECISION_LENGTH: &str =
     r"(\d+\$)?([-+0#])?(\d+|\*)?(\.(\d+|\*))?(hh?|ll?|L|z|j|t|q)?";
 const PLACEHOLDER_TYPES: &str = r"[diufFeEgGxXoscpaA]";
@@ -49,25 +48,22 @@ pub fn convert_placeholders_from_twine_to_android(input: &str) -> String {
     }
 
     // Double single percent signs
-    let single_percent_regex = Regex::new(
-        &format!(
-            r"([^%])(%)(?!(%|{}{}))",
-            PLACEHOLDER_PARAMETER_FLAGS_WIDTH_PRECISION_LENGTH, PLACEHOLDER_TYPES
-        )
-    )
+    let single_percent_regex = Regex::new(&format!(
+        r"([^%])(%)(?!(%|{}{}))",
+        PLACEHOLDER_PARAMETER_FLAGS_WIDTH_PRECISION_LENGTH, PLACEHOLDER_TYPES
+    ))
     .unwrap();
-    let value = single_percent_regex.replace_all(&value, "${1}%%").to_string();
+    let value = single_percent_regex
+        .replace_all(&value, "${1}%%")
+        .to_string();
 
     if num_placeholders < 2 {
         return value;
     }
 
     // Number non-numbered placeholders
-    let non_numbered_regex = Regex::new(&format!(
-        r"%({}{})",
-        PLACEHOLDER_FLAGS, PLACEHOLDER_TYPES
-    ))
-    .unwrap();
+    let non_numbered_regex =
+        Regex::new(&format!(r"%({}{})", PLACEHOLDER_FLAGS, PLACEHOLDER_TYPES)).unwrap();
 
     let non_numbered_count = non_numbered_regex.find_iter(&value).count();
     if non_numbered_count == 0 {

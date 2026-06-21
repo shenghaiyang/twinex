@@ -40,7 +40,12 @@ impl Formatter for FlashFormatter {
         Ok(())
     }
 
-    fn format(&self, lang: &str, twine_file: &TwineFile, options: &FormatOptions) -> Result<Option<String>> {
+    fn format(
+        &self,
+        lang: &str,
+        twine_file: &TwineFile,
+        options: &FormatOptions,
+    ) -> Result<Option<String>> {
         let processor = OutputProcessor::new(twine_file.clone(), options.clone());
         let processed = processor.process(lang);
 
@@ -61,12 +66,20 @@ impl Formatter for FlashFormatter {
                 if let Some(ref comment) = def.comment {
                     out.push_str(&format!("# {}\n", comment));
                 }
-                let value = def.translations.get(&Lang::new(lang)).map(|s| s.as_str()).unwrap_or("");
+                let value = def
+                    .translations
+                    .get(&Lang::new(lang))
+                    .map(|s| s.as_str())
+                    .unwrap_or("");
                 let value = crate::placeholders::convert_placeholders_from_twine_to_flash(value);
                 out.push_str(&format!("{}={}\n", def.key, value));
                 has_content = true;
             }
         }
-        if has_content { Ok(Some(out)) } else { Ok(None) }
+        if has_content {
+            Ok(Some(out))
+        } else {
+            Ok(None)
+        }
     }
 }

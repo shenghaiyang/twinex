@@ -42,9 +42,15 @@ fn test_convert_twine_to_flash() {
 
 #[test]
 fn test_python_specific_placeholder() {
-    assert!(placeholders::contains_python_specific_placeholder("Hello %(name)s"));
-    assert!(!placeholders::contains_python_specific_placeholder("Hello %s"));
-    assert!(!placeholders::contains_python_specific_placeholder("Hello %@"));
+    assert!(placeholders::contains_python_specific_placeholder(
+        "Hello %(name)s"
+    ));
+    assert!(!placeholders::contains_python_specific_placeholder(
+        "Hello %s"
+    ));
+    assert!(!placeholders::contains_python_specific_placeholder(
+        "Hello %@"
+    ));
 }
 
 #[test]

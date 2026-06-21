@@ -38,10 +38,7 @@ fn test_translation_for_lang() {
     def.translations
         .insert(Lang::new("fr"), "Bonjour".to_string());
 
-    assert_eq!(
-        def.translation_for(&[Lang::new("en")]),
-        Some("Hello")
-    );
+    assert_eq!(def.translation_for(&[Lang::new("en")]), Some("Hello"));
     assert_eq!(def.translation_for(&[Lang::new("de")]), None);
     assert_eq!(
         def.translation_for(&[Lang::new("de"), Lang::new("fr")]),
