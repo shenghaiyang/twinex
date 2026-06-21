@@ -29,6 +29,8 @@ jobs:
         run: |
           git config user.name github-actions[bot]
           git config user.email github-actions[bot]@users.noreply.github.com
+      - name: Copy docs
+        run: cp CHANGELOG.md docs/changelog.md
       - name: Get version
         id: version
         run: |
