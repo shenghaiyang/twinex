@@ -156,6 +156,7 @@ link = "https://github.com/shenghaiyang/twinex"
 
 [project.extra.version]
 provider = "mike"
+default = "stable"
 
 [project.markdown_extensions.abbr]
 [project.markdown_extensions.admonition]

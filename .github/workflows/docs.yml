@@ -39,8 +39,7 @@ jobs:
           elif [[ "$GITHUB_REF" == refs/tags/v* ]]; then
             version="${GITHUB_REF#refs/tags/v}"
           else
-            echo "Error: no version found (use manual dispatch or push a v* tag)" >&2
-            exit 1
+            version="latest"
           fi
           echo "version=$version" >> $GITHUB_OUTPUT
       - name: Deploy docs
