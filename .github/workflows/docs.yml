@@ -34,12 +34,13 @@ jobs:
       - name: Deploy docs
         run: |
           if [[ -n "${{ inputs.version }}" ]]; then
-            version="${{ inputs.version }}"
-            mike deploy --push version
-          elif [[ "$GITHUB_REF" == refs/tags/v* ]]; then
-            version="${GITHUB_REF#refs/tags/v}"
-            mike deploy --push --update-aliases "${{ version }}" stable
+          version="${{ inputs.version }}"
+          mike deploy --push "$version"
+        
+          elif [[ "$GITHUB_REF_NAME" == v* ]]; then
+          version="${GITHUB_REF_NAME#v}"
+          mike deploy --push "$version" --update-aliases stable latest
+        
           else
-            mike deploy --push dev
+          mike deploy --push dev
           fi
-          echo "version=$version" >> $GITHUB_OUTPUT
