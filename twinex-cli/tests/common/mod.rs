@@ -2,7 +2,7 @@
 
 use std::fs;
 use std::io::Write;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicU32, Ordering};
 
 use twinex_cli::format::FormatOptions;
@@ -17,7 +17,7 @@ pub fn unique_dir() -> PathBuf {
     dir
 }
 
-pub fn write_temp_file(dir: &PathBuf, name: &str, content: &str) -> PathBuf {
+pub fn write_temp_file(dir: &Path, name: &str, content: &str) -> PathBuf {
     let path = dir.join(name);
     let mut f = fs::File::create(&path).unwrap();
     f.write_all(content.as_bytes()).unwrap();

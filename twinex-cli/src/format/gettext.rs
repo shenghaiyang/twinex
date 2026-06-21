@@ -87,7 +87,7 @@ impl Formatter for GettextFormatter {
                 out.push_str(&format!("# SECTION: {}\n", section.name));
             }
             for def in &section.definitions {
-                if def.translations.get(&default_lang).is_none() {
+                if !def.translations.contains_key(&default_lang) {
                     continue;
                 }
                 if let Some(ref comment) = def.comment {

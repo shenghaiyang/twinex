@@ -16,11 +16,11 @@ impl Formatter for AppleFormatter {
         "Localizable.strings"
     }
     fn can_handle_directory(&self, path: &str) -> bool {
-        std::fs::read_dir(path).map_or(false, |entries| {
+        std::fs::read_dir(path).is_ok_and(|entries| {
             entries.filter_map(|e| e.ok()).any(|e| {
                 e.file_name()
                     .to_str()
-                    .map_or(false, |n| n.ends_with(".lproj"))
+                    .is_some_and(|n| n.ends_with(".lproj"))
             })
         })
     }

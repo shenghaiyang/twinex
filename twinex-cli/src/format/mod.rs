@@ -82,7 +82,7 @@ pub enum IncludeMode {
 }
 
 impl IncludeMode {
-    pub fn from_str(s: &str) -> Self {
+    pub fn parse(s: &str) -> Self {
         match s {
             "translated" => IncludeMode::Translated,
             "untranslated" => IncludeMode::Untranslated,

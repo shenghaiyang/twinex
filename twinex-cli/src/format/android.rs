@@ -16,11 +16,11 @@ impl Formatter for AndroidFormatter {
         "strings.xml"
     }
     fn can_handle_directory(&self, path: &str) -> bool {
-        std::fs::read_dir(path).map_or(false, |entries| {
+        std::fs::read_dir(path).is_ok_and(|entries| {
             entries.filter_map(|e| e.ok()).any(|e| {
                 e.file_name()
                     .to_str()
-                    .map_or(false, |n| n.starts_with("values"))
+                    .is_some_and(|n| n.starts_with("values"))
             })
         })
     }
