@@ -309,10 +309,11 @@ impl TwineFile {
     pub fn write_to_path<P: AsRef<Path>>(&self, path: P) -> Result<()> {
         let path = path.as_ref();
         let mut file = fs::File::create(path).map_err(|e| {
-            TwinexError::Io(std::io::Error::new(
-                std::io::ErrorKind::Other,
-                format!("Cannot write {}: {}", path.display(), e),
-            ))
+            TwinexError::Io(std::io::Error::other(format!(
+                "Cannot write {}: {}",
+                path.display(),
+                e
+            )))
         })?;
         self.write(&mut file)
     }

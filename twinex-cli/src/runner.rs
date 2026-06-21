@@ -22,7 +22,7 @@ pub fn run(args: CliArgs) -> anyhow::Result<()> {
     let options = FormatOptions {
         tags: args.tags.clone(),
         untagged: args.untagged,
-        include: crate::format::IncludeMode::from_str(&args.include),
+        include: crate::format::IncludeMode::parse(&args.include),
         developer_language: args.developer_language.clone(),
         escape_all_tags: args.escape_all_tags,
     };
@@ -122,10 +122,10 @@ fn cmd_generate_all(
     if !path.is_dir() {
         if args.create_folders {
             fs::create_dir_all(path).map_err(|e| {
-                TwinexError::Io(std::io::Error::new(
-                    std::io::ErrorKind::Other,
-                    format!("Cannot create {}: {}", output_path, e),
-                ))
+                TwinexError::Io(std::io::Error::other(format!(
+                    "Cannot create {}: {}",
+                    output_path, e
+                )))
             })?;
         } else {
             return Err(TwinexError::InvalidArgument(format!(
@@ -146,10 +146,11 @@ fn cmd_generate_all(
             let lang_dir = formatter.output_dir_for_lang(lang.as_str());
             let dir = path.join(&lang_dir);
             fs::create_dir_all(&dir).map_err(|e| {
-                TwinexError::Io(std::io::Error::new(
-                    std::io::ErrorKind::Other,
-                    format!("Cannot create {}: {}", dir.display(), e),
-                ))
+                TwinexError::Io(std::io::Error::other(format!(
+                    "Cannot create {}: {}",
+                    dir.display(),
+                    e
+                )))
             })?;
             generate_one_file(
                 &*formatter,
@@ -312,7 +313,7 @@ fn cmd_consume_archive(args: &CliArgs, twine_file: &mut TwineFile, input_path: &
         if Path::new(&name)
             .file_name()
             .and_then(|n| n.to_str())
-            .map_or(false, |n| n.starts_with('.'))
+            .is_some_and(|n| n.starts_with('.'))
         {
             continue;
         }
