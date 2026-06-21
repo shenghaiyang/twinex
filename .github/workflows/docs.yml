@@ -31,18 +31,15 @@ jobs:
           git config user.email github-actions[bot]@users.noreply.github.com
       - name: Copy docs
         run: cp CHANGELOG.md docs/changelog.md
-      - name: Get version
-        id: version
+      - name: Deploy docs
         run: |
           if [[ -n "${{ inputs.version }}" ]]; then
             version="${{ inputs.version }}"
+            mike deploy --push version
           elif [[ "$GITHUB_REF" == refs/tags/v* ]]; then
             version="${GITHUB_REF#refs/tags/v}"
+            mike deploy --push --update-aliases "${{ version }}" stable
           else
-            version="latest"
+            mike deploy --push dev
           fi
           echo "version=$version" >> $GITHUB_OUTPUT
-      - name: Deploy docs
-        run: |
-          mike deploy --push --update-aliases "${{ steps.version.outputs.version }}" latest
-          mike set-default --push latest
