@@ -7,8 +7,16 @@ hide:
 
 A localization code generator compatible with the [Twine](https://github.com/scelis/twine) file format, implemented in Rust.
 
-[![Crates.io](https://img.shields.io/crates/v/twinex-cli)](https://crates.io/crates/twinex-cli)
-[![License](https://img.shields.io/badge/license-Apache%202.0-blue)](https://github.com/shenghaiyang/twinex/blob/main/LICENSE)
+[![Crates.io][crates-badge]][crates-url]
+[![License][license-badge]][license-url]
+[![Docs Build Status][docs-build-badge]][docs-build-url]
+
+[crates-badge]: https://img.shields.io/crates/v/twinex-cli.svg
+[crates-url]: https://crates.io/crates/twinex-cli
+[license-badge]: https://img.shields.io/badge/license-Apache%202.0-blue.svg
+[license-url]: https://github.com/shenghaiyang/twinex/blob/trunk/LICENSE
+[docs-build-badge]: https://github.com/shenghaiyang/twinex/actions/workflows/docs.yml/badge.svg
+[docs-build-url]: https://github.com/shenghaiyang/twinex/actions/workflows/docs.yml
 
 ---
 
