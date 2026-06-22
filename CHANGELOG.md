@@ -2,8 +2,13 @@
 
 ## Unreleased
 
-### Changed
 
+## 0.2.0
+
+### New
+
+- Documentation website powered by Zensical
+- Automated GitHub Pages deployment via GitHub Actions
 - **Breaking:** Consolidated 7 subcommands into 3: `generate`, `consume`, `validate`. Use `--all`/`--archive` flags to switch modes.
   - `generate-localization-file` → `generate`
   - `generate-all-localization-files` → `generate --all`
@@ -14,19 +19,15 @@
   - `validate-twine-file` → `validate`
 - **Breaking:** `--consume-all` short flag changed from `-a` to `-c` (now `-a` is `--all` for directory mode)
 - Refactored internal architecture: extracted `Twinex` core struct with parameter structs, decoupled from CLI parsing
+- Add cargo-dist release workflow
 
-### New
-
-- Documentation website powered by Zensical
-- Automated GitHub Pages deployment via GitHub Actions
-
-## [0.1.1]
+## 0.1.1
 
 ### Fixes
 
 - Corrected the installation command in the README from cargo install twinex to cargo install twinex-cli.
 
-## [0.1.0] 
+## 0.1.0
 
 ### New
 
