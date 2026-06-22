@@ -2,6 +2,19 @@
 
 ## Unreleased
 
+### Changed
+
+- **Breaking:** Consolidated 7 subcommands into 3: `generate`, `consume`, `validate`. Use `--all`/`--archive` flags to switch modes.
+  - `generate-localization-file` → `generate`
+  - `generate-all-localization-files` → `generate --all`
+  - `generate-localization-archive` → `generate --archive`
+  - `consume-localization-file` → `consume`
+  - `consume-all-localization-files` → `consume --all`
+  - `consume-localization-archive` → `consume` (auto-detected by `.zip` extension)
+  - `validate-twine-file` → `validate`
+- **Breaking:** `--consume-all` short flag changed from `-a` to `-c` (now `-a` is `--all` for directory mode)
+- Refactored internal architecture: extracted `Twinex` core struct with parameter structs, decoupled from CLI parsing
+
 ### New
 
 - Documentation website powered by Zensical

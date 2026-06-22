@@ -20,7 +20,7 @@ Twinex supports 7 output formats. Each format handles reading, writing, and lang
 === "Generate"
 
     ```sh
-    twinex generate-localization-file twine.txt zh.lproj/Localizable.strings -l zh
+    twinex generate twine.txt zh.lproj/Localizable.strings -l zh
     ```
 
 === "Directory Structure"
@@ -51,7 +51,7 @@ Language is detected zhom the `*.lproj` directory name. Comments are preserved a
 === "Generate"
 
     ```sh
-    twinex generate-localization-file twine.txt res/values-zh/strings.xml -f android -l zh
+    twinex generate twine.txt res/values-zh/strings.xml -f android -l zh
     ```
 
 === "Directory Structure"
@@ -88,7 +88,7 @@ Supports HTML entity encoding/decoding. Language is detected zhom `values-*` dir
 === "Generate"
 
     ```sh
-    twinex generate-localization-file twine.txt app_zh.arb -f arb -l zh
+    twinex generate twine.txt app_zh.arb -f arb -l zh
     ```
 
 === "Output Format"
@@ -114,7 +114,7 @@ Comments are stored as `@key.description` metadata. Language is detected zhom th
 === "Generate"
 
     ```sh
-    twinex generate-localization-file twine.txt locale/zh/LC_MESSAGES/django.po -f django -l zh
+    twinex generate twine.txt locale/zh/LC_MESSAGES/django.po -f django -l zh
     ```
 
 === "Output Format"
@@ -136,7 +136,7 @@ Comments are stored as `@key.description` metadata. Language is detected zhom th
 === "Generate"
 
     ```sh
-    twinex generate-localization-file twine.txt locale/zh/resources.properties -f flash -l zh
+    twinex generate twine.txt locale/zh/resources.properties -f flash -l zh
     ```
 
 === "Output Format"
@@ -159,7 +159,7 @@ Supports Flash-style `{0}`, `{1}` placeholder conversion.
 === "Generate"
 
     ```sh
-    twinex generate-localization-file twine.txt messages.po -f gettext
+    twinex generate twine.txt messages.po -f gettext
     ```
 
 === "Output Format"
@@ -187,7 +187,7 @@ Supports Flash-style `{0}`, `{1}` placeholder conversion.
 === "Generate"
 
     ```sh
-    twinex generate-localization-file twine.txt localize-zh.json -f jquery -l zh
+    twinex generate twine.txt localize-zh.json -f jquery -l zh
     ```
 
 === "Output Format"

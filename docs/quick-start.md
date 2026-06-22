@@ -41,8 +41,8 @@ cat > twine.txt << 'EOF'
 EOF
 
 # Generate iOS strings
-twinex generate-localization-file twine.txt zh.strings -l zh
+twinex generate twine.txt zh.strings -l zh
 
 # Consume back
-twinex consume-localization-file twine.txt zh.strings -l zh
+twinex consume twine.txt zh.strings -l zh
 ```

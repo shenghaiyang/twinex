@@ -26,16 +26,16 @@ Create a Twine file with your base language and translations:
 
 ```sh
 # iOS
-twinex generate-all-localization-files twine.txt Localization/ -f apple -r
+twinex generate twine.txt Localization/ -f apple -r -a
 
 # Android
-twinex generate-all-localization-files twine.txt res/ -f android -r
+twinex generate twine.txt res/ -f android -r -a
 ```
 
 ## 3. Validate
 
 ```sh
-twinex validate-twine-file twine.txt
+twinex validate twine.txt
 ```
 
 ## Consume existing translations
@@ -43,5 +43,5 @@ twinex validate-twine-file twine.txt
 If translators provide files in platform format, merge them back:
 
 ```sh
-twinex consume-all-localization-files twine.txt translations/ -f apple
+twinex consume twine.txt translations/ -f apple -a
 ```

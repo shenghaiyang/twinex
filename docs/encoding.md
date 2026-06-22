@@ -13,7 +13,7 @@ Twinex supports multiple output encodings:
 
 ```sh
 # Generate iOS strings with UTF-16 encoding
-twinex generate-localization-file twine.txt zh.strings -l zh -e UTF-16
+twinex generate twine.txt zh.strings -l zh -e UTF-16
 ```
 
 ---
@@ -39,5 +39,5 @@ Generating for Japanese:
 Set the developer language explicitly:
 
 ```sh
-twinex generate-localization-file twine.txt zh.strings -l zh -d en
+twinex generate twine.txt zh.strings -l zh -d en
 ```
