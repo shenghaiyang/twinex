@@ -25,7 +25,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="zensical-0.0.45">
+      <meta name="generator" content="zensical-0.0.46">
     
     
       
@@ -36,7 +36,7 @@
       
         
       
-      <link rel="stylesheet" href="../assets/stylesheets/modern/main.fba56155.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/modern/main.19d3147f.min.css">
       
         
           
@@ -1122,13 +1122,9 @@
 <div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>twinex &lt;COMMAND&gt;
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>Commands:
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>  generate-localization-file       Generate a single localization file
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>  generate-all-localization-files  Generate all localization files for a project
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>  generate-localization-archive    Generate a zip archive of localization files
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>  consume-localization-file        Consume translations from a localization file
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>  consume-all-localization-files   Consume translations from a directory
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>  consume-localization-archive     Consume translations from an archive
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>  validate-twine-file              Validate that a Twine file is parseable
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>  generate  Generate localization file(s) from a twine file
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>  consume   Consume translations from localization file(s) into the twine file
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>  validate  Validate that a twine file is parseable
 </span></code></pre></div>
 <h2 id="quick-reference">Quick Reference<a class="headerlink" href="#quick-reference" title="Permanent link">&para;</a></h2>
 <h3 id="generate">Generate<a class="headerlink" href="#generate" title="Permanent link">&para;</a></h3>
@@ -1136,68 +1132,76 @@
 <table>
 <thead>
 <tr>
-<th>Command</th>
+<th>Mode</th>
+<th>Flag</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>generate-localization-file</code></td>
+<td>Single file</td>
+<td><em>(default)</em></td>
 <td>Generate a single file for one language</td>
 </tr>
 <tr>
-<td><code>generate-all-localization-files</code></td>
+<td>All languages</td>
+<td><code>--all</code></td>
 <td>Generate files for all languages</td>
 </tr>
 <tr>
-<td><code>generate-localization-archive</code></td>
+<td>Zip archive</td>
+<td><code>--archive</code></td>
 <td>Generate a zip archive</td>
 </tr>
 </tbody>
 </table>
 <div class="language-sh highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># Single file</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>twinex<span class="w"> </span>generate-localization-file<span class="w"> </span>twine.txt<span class="w"> </span>output.xml<span class="w"> </span>-f<span class="w"> </span>android<span class="w"> </span>-l<span class="w"> </span>zh
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>twinex<span class="w"> </span>generate<span class="w"> </span>twine.txt<span class="w"> </span>output.xml<span class="w"> </span>-f<span class="w"> </span>android<span class="w"> </span>-l<span class="w"> </span>zh
 </span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
 </span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="c1"># All languages</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>twinex<span class="w"> </span>generate-all-localization-files<span class="w"> </span>twine.txt<span class="w"> </span>res/<span class="w"> </span>-f<span class="w"> </span>android<span class="w"> </span>-r
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>twinex<span class="w"> </span>generate<span class="w"> </span>twine.txt<span class="w"> </span>res/<span class="w"> </span>-f<span class="w"> </span>android<span class="w"> </span>-r<span class="w"> </span>-a
 </span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
 </span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="c1"># Zip archive</span>
-</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>twinex<span class="w"> </span>generate-localization-archive<span class="w"> </span>twine.txt<span class="w"> </span>translations.zip<span class="w"> </span>-f<span class="w"> </span>apple<span class="w"> </span>-l<span class="w"> </span>zh
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>twinex<span class="w"> </span>generate<span class="w"> </span>twine.txt<span class="w"> </span>translations.zip<span class="w"> </span>-f<span class="w"> </span>apple<span class="w"> </span>-l<span class="w"> </span>zh<span class="w"> </span>--archive
 </span></code></pre></div>
 <h3 id="consume">Consume<a class="headerlink" href="#consume" title="Permanent link">&para;</a></h3>
 <p><a href="../consume/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span> Full consume reference</a></p>
 <table>
 <thead>
 <tr>
-<th>Command</th>
+<th>Mode</th>
+<th>Flag</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>consume-localization-file</code></td>
+<td>Single file</td>
+<td><em>(default)</em></td>
 <td>Consume a single file</td>
 </tr>
 <tr>
-<td><code>consume-all-localization-files</code></td>
+<td>All files</td>
+<td><code>--all</code></td>
 <td>Consume files from a directory</td>
 </tr>
 <tr>
-<td><code>consume-localization-archive</code></td>
-<td>Consume files from a zip archive</td>
+<td>Zip archive</td>
+<td><em>(auto)</em></td>
+<td>Consume files from a zip archive (detected by <code>.zip</code> extension)</td>
 </tr>
 </tbody>
 </table>
 <div class="language-sh highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># Single file</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>twinex<span class="w"> </span>consume-localization-file<span class="w"> </span>twine.txt<span class="w"> </span>zh.strings<span class="w"> </span>-l<span class="w"> </span>zh
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>twinex<span class="w"> </span>consume<span class="w"> </span>twine.txt<span class="w"> </span>zh.strings<span class="w"> </span>-l<span class="w"> </span>zh
 </span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
 </span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="c1"># All files in directory</span>
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>twinex<span class="w"> </span>consume-all-localization-files<span class="w"> </span>twine.txt<span class="w"> </span>Resources/<span class="w"> </span>-f<span class="w"> </span>apple
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>twinex<span class="w"> </span>consume<span class="w"> </span>twine.txt<span class="w"> </span>Resources/<span class="w"> </span>-f<span class="w"> </span>apple<span class="w"> </span>-a
 </span></code></pre></div>
 <h3 id="validate">Validate<a class="headerlink" href="#validate" title="Permanent link">&para;</a></h3>
 <p><a href="../validate/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span> Full validate reference</a></p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>twinex<span class="w"> </span>validate-twine-file<span class="w"> </span>twine.txt
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>twinex<span class="w"> </span>validate-twine-file<span class="w"> </span>twine.txt<span class="w"> </span>-p<span class="w">    </span><span class="c1"># pedantic mode</span>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>twinex<span class="w"> </span>validate<span class="w"> </span>twine.txt
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>twinex<span class="w"> </span>validate<span class="w"> </span>twine.txt<span class="w"> </span>-p<span class="w">    </span><span class="c1"># pedantic mode</span>
 </span></code></pre></div>
 <h3 id="common-concepts">Common Concepts<a class="headerlink" href="#common-concepts" title="Permanent link">&para;</a></h3>
 <table>
@@ -1342,10 +1346,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate":null,"base":"..","features":["announce.dismiss","content.action.edit","content.action.view","content.code.annotate","content.code.copy","content.code.select","content.footnote.tooltips","content.tabs.link","content.tooltips","navigation.footer","navigation.indexes","navigation.instant","navigation.instant.prefetch","navigation.sections","navigation.tabs","navigation.top","navigation.tracking","search.highlight"],"search":"../assets/javascripts/workers/search.e2d2d235.min.js","tags":null,"translations":{"clipboard.copied":"Copied to clipboard","clipboard.copy":"Copy to clipboard","search.result.more.one":"1 more on this page","search.result.more.other":"# more on this page","search.result.none":"No matching documents","search.result.one":"1 matching document","search.result.other":"# matching documents","search.result.placeholder":"Type to start searching","search.result.term.missing":"Missing","select.version":"Select version"},"version":{"default":"stable","provider":"mike"}}</script>
+      <script id="__config" type="application/json">{"annotate":null,"base":"..","features":["announce.dismiss","content.action.edit","content.action.view","content.code.annotate","content.code.copy","content.code.select","content.footnote.tooltips","content.tabs.link","content.tooltips","navigation.footer","navigation.indexes","navigation.instant","navigation.instant.prefetch","navigation.sections","navigation.tabs","navigation.top","navigation.tracking","search.highlight"],"search":"../assets/javascripts/workers/search.b6b7e04f.min.js","tags":null,"translations":{"clipboard.copied":"Copied to clipboard","clipboard.copy":"Copy to clipboard","search.result.more.one":"1 more on this page","search.result.more.other":"# more on this page","search.result.none":"No matching documents","search.result.one":"1 matching document","search.result.other":"# matching documents","search.result.placeholder":"Type to start searching","search.result.term.missing":"Missing","select.version":"Select version"},"version":{"default":"stable","provider":"mike"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.6e5f0216.min.js"></script>
+      <script src="../assets/javascripts/bundle.ee611ef6.min.js"></script>
       
     
   </body>

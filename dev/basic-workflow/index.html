@@ -25,7 +25,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="zensical-0.0.45">
+      <meta name="generator" content="zensical-0.0.46">
     
     
       
@@ -36,7 +36,7 @@
       
         
       
-      <link rel="stylesheet" href="../assets/stylesheets/modern/main.fba56155.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/modern/main.19d3147f.min.css">
       
         
           
@@ -1082,17 +1082,17 @@
 </span></code></pre></div>
 <h2 id="2-generate-platform-files">2. Generate platform files<a class="headerlink" href="#2-generate-platform-files" title="Permanent link">&para;</a></h2>
 <div class="language-sh highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># iOS</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>twinex<span class="w"> </span>generate-all-localization-files<span class="w"> </span>twine.txt<span class="w"> </span>Localization/<span class="w"> </span>-f<span class="w"> </span>apple<span class="w"> </span>-r
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>twinex<span class="w"> </span>generate<span class="w"> </span>twine.txt<span class="w"> </span>Localization/<span class="w"> </span>-f<span class="w"> </span>apple<span class="w"> </span>-r<span class="w"> </span>-a
 </span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
 </span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="c1"># Android</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>twinex<span class="w"> </span>generate-all-localization-files<span class="w"> </span>twine.txt<span class="w"> </span>res/<span class="w"> </span>-f<span class="w"> </span>android<span class="w"> </span>-r
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>twinex<span class="w"> </span>generate<span class="w"> </span>twine.txt<span class="w"> </span>res/<span class="w"> </span>-f<span class="w"> </span>android<span class="w"> </span>-r<span class="w"> </span>-a
 </span></code></pre></div>
 <h2 id="3-validate">3. Validate<a class="headerlink" href="#3-validate" title="Permanent link">&para;</a></h2>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>twinex<span class="w"> </span>validate-twine-file<span class="w"> </span>twine.txt
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>twinex<span class="w"> </span>validate<span class="w"> </span>twine.txt
 </span></code></pre></div>
 <h2 id="consume-existing-translations">Consume existing translations<a class="headerlink" href="#consume-existing-translations" title="Permanent link">&para;</a></h2>
 <p>If translators provide files in platform format, merge them back:</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>twinex<span class="w"> </span>consume-all-localization-files<span class="w"> </span>twine.txt<span class="w"> </span>translations/<span class="w"> </span>-f<span class="w"> </span>apple
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>twinex<span class="w"> </span>consume<span class="w"> </span>twine.txt<span class="w"> </span>translations/<span class="w"> </span>-f<span class="w"> </span>apple<span class="w"> </span>-a
 </span></code></pre></div>
 
 
@@ -1214,10 +1214,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate":null,"base":"..","features":["announce.dismiss","content.action.edit","content.action.view","content.code.annotate","content.code.copy","content.code.select","content.footnote.tooltips","content.tabs.link","content.tooltips","navigation.footer","navigation.indexes","navigation.instant","navigation.instant.prefetch","navigation.sections","navigation.tabs","navigation.top","navigation.tracking","search.highlight"],"search":"../assets/javascripts/workers/search.e2d2d235.min.js","tags":null,"translations":{"clipboard.copied":"Copied to clipboard","clipboard.copy":"Copy to clipboard","search.result.more.one":"1 more on this page","search.result.more.other":"# more on this page","search.result.none":"No matching documents","search.result.one":"1 matching document","search.result.other":"# matching documents","search.result.placeholder":"Type to start searching","search.result.term.missing":"Missing","select.version":"Select version"},"version":{"default":"stable","provider":"mike"}}</script>
+      <script id="__config" type="application/json">{"annotate":null,"base":"..","features":["announce.dismiss","content.action.edit","content.action.view","content.code.annotate","content.code.copy","content.code.select","content.footnote.tooltips","content.tabs.link","content.tooltips","navigation.footer","navigation.indexes","navigation.instant","navigation.instant.prefetch","navigation.sections","navigation.tabs","navigation.top","navigation.tracking","search.highlight"],"search":"../assets/javascripts/workers/search.b6b7e04f.min.js","tags":null,"translations":{"clipboard.copied":"Copied to clipboard","clipboard.copy":"Copy to clipboard","search.result.more.one":"1 more on this page","search.result.more.other":"# more on this page","search.result.none":"No matching documents","search.result.one":"1 matching document","search.result.other":"# matching documents","search.result.placeholder":"Type to start searching","search.result.term.missing":"Missing","select.version":"Select version"},"version":{"default":"stable","provider":"mike"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.6e5f0216.min.js"></script>
+      <script src="../assets/javascripts/bundle.ee611ef6.min.js"></script>
       
     
   </body>
