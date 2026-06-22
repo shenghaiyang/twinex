@@ -30,19 +30,19 @@ Twinex reads a [Twine-formatted](https://github.com/scelis/twine) text file cont
 === "Generate"
 
     ```sh
-    twinex generate-localization-file twine.txt output/strings.xml -f android -l zh
+    twinex generate twine.txt output/strings.xml -f android -l zh
     ```
 
 === "Consume"
 
     ```sh
-    twinex consume-localization-file twine.txt zh.strings -l zh
+    twinex consume twine.txt zh.strings -l zh
     ```
 
 === "Validate"
 
     ```sh
-    twinex validate-twine-file twine.txt --pedantic
+    twinex validate twine.txt --pedantic
     ```
 
 ## Supported Formats

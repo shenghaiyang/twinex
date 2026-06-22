@@ -6,13 +6,9 @@
 twinex <COMMAND>
 
 Commands:
-  generate-localization-file       Generate a single localization file
-  generate-all-localization-files  Generate all localization files for a project
-  generate-localization-archive    Generate a zip archive of localization files
-  consume-localization-file        Consume translations from a localization file
-  consume-all-localization-files   Consume translations from a directory
-  consume-localization-archive     Consume translations from an archive
-  validate-twine-file              Validate that a Twine file is parseable
+  generate  Generate localization file(s) from a twine file
+  consume   Consume translations from localization file(s) into the twine file
+  validate  Validate that a twine file is parseable
 ```
 
 ## Quick Reference
@@ -21,39 +17,39 @@ Commands:
 
 [:octicons-arrow-right-24: Full generate reference](generate.md)
 
-| Command | Description |
-|---------|-------------|
-| `generate-localization-file` | Generate a single file for one language |
-| `generate-all-localization-files` | Generate files for all languages |
-| `generate-localization-archive` | Generate a zip archive |
+| Mode | Flag | Description |
+|------|------|-------------|
+| Single file | *(default)* | Generate a single file for one language |
+| All languages | `--all` | Generate files for all languages |
+| Zip archive | `--archive` | Generate a zip archive |
 
 ```sh
 # Single file
-twinex generate-localization-file twine.txt output.xml -f android -l zh
+twinex generate twine.txt output.xml -f android -l zh
 
 # All languages
-twinex generate-all-localization-files twine.txt res/ -f android -r
+twinex generate twine.txt res/ -f android -r -a
 
 # Zip archive
-twinex generate-localization-archive twine.txt translations.zip -f apple -l zh
+twinex generate twine.txt translations.zip -f apple -l zh --archive
 ```
 
 ### Consume
 
 [:octicons-arrow-right-24: Full consume reference](consume.md)
 
-| Command | Description |
-|---------|-------------|
-| `consume-localization-file` | Consume a single file |
-| `consume-all-localization-files` | Consume files from a directory |
-| `consume-localization-archive` | Consume files from a zip archive |
+| Mode | Flag | Description |
+|------|------|-------------|
+| Single file | *(default)* | Consume a single file |
+| All files | `--all` | Consume files from a directory |
+| Zip archive | *(auto)* | Consume files from a zip archive (detected by `.zip` extension) |
 
 ```sh
 # Single file
-twinex consume-localization-file twine.txt zh.strings -l zh
+twinex consume twine.txt zh.strings -l zh
 
 # All files in directory
-twinex consume-all-localization-files twine.txt Resources/ -f apple
+twinex consume twine.txt Resources/ -f apple -a
 ```
 
 ### Validate
@@ -61,8 +57,8 @@ twinex consume-all-localization-files twine.txt Resources/ -f apple
 [:octicons-arrow-right-24: Full validate reference](validate.md)
 
 ```sh
-twinex validate-twine-file twine.txt
-twinex validate-twine-file twine.txt -p    # pedantic mode
+twinex validate twine.txt
+twinex validate twine.txt -p    # pedantic mode
 ```
 
 ### Common Concepts

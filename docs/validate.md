@@ -4,23 +4,23 @@ Check that a Twine file is well-formed and optionally enforce naming conventions
 
 ---
 
-## `validate-twine-file`
+## `validate`
 
 ```sh
-twinex validate-twine-file <TWINE_FILE> [OPTIONS]
+twinex validate <TWINE_FILE> [OPTIONS]
 ```
 
 **Examples:**
 
 ```sh
 # Basic validation
-twinex validate-twine-file twine.txt
+twinex validate twine.txt
 
 # Pedantic mode — keys must match ^[A-Za-z0-9_]+$
-twinex validate-twine-file twine.txt -p
+twinex validate twine.txt -p
 
 # With developer language override
-twinex validate-twine-file twine.txt -d en
+twinex validate twine.txt -d en
 ```
 
 ---

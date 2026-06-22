@@ -53,13 +53,9 @@ A Twine file is a plain text file containing sections and key-value definitions:
 twinex <COMMAND>
 
 Commands:
-  generate-localization-file       Generate a single localization file
-  generate-all-localization-files  Generate all localization files for a project
-  generate-localization-archive    Generate a zip archive of localization files
-  consume-localization-file        Consume translations from a localization file
-  consume-all-localization-files   Consume translations from a directory
-  consume-localization-archive     Consume translations from an archive
-  validate-twine-file              Validate that a Twine file is parseable
+  generate  Generate localization file(s) from a twine file
+  consume   Consume translations from localization file(s) into the twine file
+  validate  Validate that a twine file is parseable
 ```
 
 ### Generate
@@ -68,13 +64,13 @@ Generate localization files from a Twine file.
 
 ```sh
 # Single file
-twinex generate-localization-file twine.txt output/strings.xml -f android -l ja,ko
+twinex generate twine.txt output/strings.xml -f android -l ja,ko
 
-# All languages (default), one file per language
-twinex generate-all-localization-files twine.txt output/ -f apple -r
+# All languages (--all), one file per language
+twinex generate twine.txt output/ -f apple -r -a
 
-# Zip archive
-twinex generate-localization-archive twine.txt output.zip -f apple -l en,fr,ja
+# Zip archive (--archive)
+twinex generate twine.txt output.zip -f apple -l en,fr,ja --archive
 ```
 
 **Generate options:**
@@ -83,6 +79,8 @@ twinex generate-localization-archive twine.txt output.zip -f apple -l en,fr,ja
 |--------|-------------|
 | `-f, --format` | Output format: `apple`, `android`, `arb`, `django`, `flash`, `gettext`, `jquery` |
 | `-l, --lang` | Comma-separated list of languages to generate (defaults to all) |
+| `-a, --all` | Generate all localization files (output_path is a directory) |
+| `--archive` | Generate a zip archive of localization files |
 | `-d, --developer-language` | Override the developer language |
 | `-t, --tags` | Comma-separated list of tags to include in output |
 | `-u, --untagged` | Include untagged strings in output |
@@ -90,8 +88,8 @@ twinex generate-localization-archive twine.txt output.zip -f apple -l en,fr,ja
 | `-e, --encoding` | Output file encoding (e.g. `UTF-16`, `UTF-16LE`) |
 | `--escape-all-tags` | Escape all HTML/XML tags in generated output |
 | `--validate` | Validate the Twine file before generating |
-| `-r, --create-folders` | (`generate-all` only) Create language-specific output directories |
-| `-n, --file-name` | (`generate-all` only) Custom output file name |
+| `-r, --create-folders` | (with `--all`) Create language-specific output directories |
+| `-n, --file-name` | (with `--all`) Custom output file name |
 
 ### Consume
 
@@ -99,13 +97,13 @@ Consume existing localization files back into a Twine file.
 
 ```sh
 # Single file
-twinex consume-localization-file twine.txt ja.strings -l ja
+twinex consume twine.txt ja.strings -l ja
 
-# All files in a directory
-twinex consume-all-localization-files twine.txt Resources/ -f apple
+# All files in a directory (--all)
+twinex consume twine.txt Resources/ -f apple -a
 
-# From a zip archive
-twinex consume-localization-archive twine.txt archive.zip
+# From a zip archive (auto-detected by .zip extension)
+twinex consume twine.txt archive.zip
 ```
 
 **Consume options:**
@@ -114,8 +112,9 @@ twinex consume-localization-archive twine.txt archive.zip
 |--------|-------------|
 | `-f, --format` | Input format (auto-detected from extension if omitted) |
 | `-l, --lang` | Comma-separated list of languages to consume |
-| `-a, --consume-all` | Consume all translations, even if key doesn't exist in twine file |
-| `-c, --consume-comments` | Consume comments from the localization file |
+| `-a, --all` | Consume all localization files from a directory |
+| `-c, --consume-all` | Consume all translations, even if key doesn't exist in twine file |
+| `-m, --consume-comments` | Consume comments from the localization file |
 | `-d, --developer-language` | Override the developer language |
 | `-t, --tags` | Comma-separated list of tags to set on consumed definitions |
 | `-o, --output-file` | Write the updated twine data to a different file |
@@ -127,10 +126,10 @@ Check that a Twine file is well-formed and optionally enforce naming conventions
 
 ```sh
 # Basic validation (parse errors)
-twinex validate-twine-file twine.txt
+twinex validate twine.txt
 
 # Pedantic mode — keys must match ^[A-Za-z0-9_]+$
-twinex validate-twine-file twine.txt -p
+twinex validate twine.txt -p
 ```
 
 ### Supported formats

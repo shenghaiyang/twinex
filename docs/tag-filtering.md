@@ -24,10 +24,10 @@ Tags allow you to control which strings are included in generated output.
 
 ```sh
 # Only strings tagged "ios"
-twinex generate-localization-file twine.txt output.xml -f android -t ios
+twinex generate twine.txt output.xml -f android -t ios
 
 # Strings tagged "ios" OR untagged strings
-twinex generate-localization-file twine.txt output.xml -f android -t ios -u
+twinex generate twine.txt output.xml -f android -t ios -u
 ```
 
 ---
