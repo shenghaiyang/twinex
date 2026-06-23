@@ -1042,26 +1042,26 @@
 <h1 id="quick-start">Quick Start<a class="headerlink" href="#quick-start" title="Permanent link">&para;</a></h1>
 <h2 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h2>
 <p>Pick your preferred method — see the <a href="../installation/">full installation guide</a> for more options.</p>
-<p>=== Homebrew</p>
-<div class="language-text highlight"><pre><span></span><code>```sh
-brew install shenghaiyang/tap/twinex-cli
-```
-</code></pre></div>
-<p>=== Cargo</p>
-<div class="language-text highlight"><pre><span></span><code>```sh
-cargo install twinex-cli
-```
-</code></pre></div>
-<p>=== Shell</p>
-<div class="language-text highlight"><pre><span></span><code>```sh
-curl --proto &#39;=https&#39; --tlsv1.2 -LsSf https://github.com/shenghaiyang/twinex/releases/latest/download/twinex-cli-installer.sh | sh
-```
-</code></pre></div>
-<p>=== PowerShell</p>
-<div class="language-text highlight"><pre><span></span><code>```powershell
-powershell -ExecutionPolicy Bypass -c &quot;irm https://github.com/shenghaiyang/twinex/releases/latest/download/twinex-cli-installer.ps1 | iex&quot;
-```
-</code></pre></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:4"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><input id="__tabbed_1_4" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Homebrew</label><label for="__tabbed_1_2">Cargo</label><label for="__tabbed_1_3">Shell</label><label for="__tabbed_1_4">PowerShell</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>brew<span class="w"> </span>install<span class="w"> </span>shenghaiyang/tap/twinex-cli
+</span></code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>cargo<span class="w"> </span>install<span class="w"> </span>twinex-cli
+</span></code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>curl<span class="w"> </span>--proto<span class="w"> </span><span class="s1">&#39;=https&#39;</span><span class="w"> </span>--tlsv1.2<span class="w"> </span>-LsSf<span class="w"> </span>https://github.com/shenghaiyang/twinex/releases/latest/download/twinex-cli-installer.sh<span class="w"> </span><span class="p">|</span><span class="w"> </span>sh
+</span></code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">powershell</span> <span class="n">-ExecutionPolicy</span> <span class="n">Bypass</span> <span class="n">-c</span> <span class="s2">&quot;irm https://github.com/shenghaiyang/twinex/releases/latest/download/twinex-cli-installer.ps1 | iex&quot;</span>
+</span></code></pre></div>
+</div>
+</div>
+</div>
 <h2 id="the-twine-file-format">The Twine File Format<a class="headerlink" href="#the-twine-file-format" title="Permanent link">&para;</a></h2>
 <p>A Twine file is a plain text file that stores all your app's translations in one place. It uses indentation to define structure:</p>
 <div class="language-ini highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">[[Section Name]]</span>
