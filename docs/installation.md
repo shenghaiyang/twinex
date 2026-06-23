@@ -18,7 +18,7 @@ curl --proto '=https' --tlsv1.2 -LsSf https://github.com/shenghaiyang/twinex/rel
 powershell -ExecutionPolicy Bypass -c "irm https://github.com/shenghaiyang/twinex/releases/latest/download/twinex-cli-installer.ps1 | iex"
 ```
 
-## Via Cargo
+### Via Cargo
 
 ```sh
 cargo install twinex-cli
@@ -28,7 +28,7 @@ cargo install twinex-cli
 
 Download the latest release for your platform from the [GitHub Releases page](https://github.com/shenghaiyang/twinex/releases/latest), extract the archive, and place the `twinex` binary in your `PATH`.
 
-## Build from Source
+### Build from Source
 
 ```sh
 git clone https://github.com/shenghaiyang/twinex.git
