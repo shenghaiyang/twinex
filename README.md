@@ -6,6 +6,7 @@ A localization code generator compatible with the [Twine](https://github.com/sce
 [![License][license-badge]][license-url]
 [![Docs][docs-action-badge]][docs-action-url]
 [![CI][ci-action-badge]][ci-action-url]
+[![Website][website-badge]][website-url]
 
 [crates-badge]: https://img.shields.io/crates/v/twinex-cli.svg
 [crates-url]: https://crates.io/crates/twinex-cli
@@ -15,6 +16,8 @@ A localization code generator compatible with the [Twine](https://github.com/sce
 [docs-action-url]: https://github.com/shenghaiyang/twinex/actions/workflows/docs.yml
 [ci-action-badge]: https://github.com/shenghaiyang/twinex/actions/workflows/ci.yml/badge.svg
 [ci-action-url]: https://github.com/shenghaiyang/twinex/actions/workflows/ci.yml
+[website-badge]: https://img.shields.io/badge/website-twinex-blue
+[website-url]: https://shenghaiyang.github.io/twinex/
 
 ---
 
@@ -25,17 +28,41 @@ A localization code generator compatible with the [Twine](https://github.com/sce
 
 ## Usage
 
+See the [full documentation](https://shenghaiyang.github.io/twinex/) for detailed guides and examples.
+
 ### Installation
+
+See the [full installation guide](https://shenghaiyang.github.io/twinex/latest/installation/) for all available methods.
+
+#### Homebrew
+
+```sh
+brew install shenghaiyang/tap/twinex-cli
+```
+
+#### Cargo
 
 ```sh
 cargo install twinex-cli
+```
+
+#### Shell
+
+```sh
+curl --proto '=https' --tlsv1.2 -LsSf https://github.com/shenghaiyang/twinex/releases/latest/download/twinex-cli-installer.sh | sh
+```
+
+#### PowerShell
+
+```pwsh
+powershell -ExecutionPolicy Bypass -c "irm https://github.com/shenghaiyang/twinex/releases/latest/download/twinex-cli-installer.ps1 | iex"
 ```
 
 ### Twine file format
 
 A Twine file is a plain text file containing sections and key-value definitions:
 
-```
+```ini
 [[Section]]
 	[key]
 		comment = Description of the key
@@ -49,7 +76,7 @@ A Twine file is a plain text file containing sections and key-value definitions:
 
 ### Subcommands
 
-```
+```sh
 twinex <COMMAND>
 
 Commands:

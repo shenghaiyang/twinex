@@ -11,6 +11,7 @@ A localization code generator compatible with the [Twine](https://github.com/sce
 [![License][license-badge]][license-url]
 [![Docs][docs-action-badge]][docs-action-url]
 [![CI][ci-action-badge]][ci-action-url]
+[![Website][website-badge]][website-url]
 
 [crates-badge]: https://img.shields.io/crates/v/twinex-cli.svg
 [crates-url]: https://crates.io/crates/twinex-cli
@@ -20,6 +21,8 @@ A localization code generator compatible with the [Twine](https://github.com/sce
 [docs-action-url]: https://github.com/shenghaiyang/twinex/actions/workflows/docs.yml
 [ci-action-badge]: https://github.com/shenghaiyang/twinex/actions/workflows/ci.yml/badge.svg
 [ci-action-url]: https://github.com/shenghaiyang/twinex/actions/workflows/ci.yml
+[website-badge]: https://img.shields.io/badge/website-twinex-blue
+[website-url]: https://shenghaiyang.github.io/twinex/
 
 ---
 
@@ -56,6 +59,13 @@ Twinex reads a [Twine-formatted](https://github.com/scelis/twine) text file cont
 | `flash` | `.properties` | Flash |
 | `gettext` | `.po` | GNU Gettext |
 | `jquery` | `.json` | jQuery i18n |
+
+## Status
+
+!!! warning
+
+    Twinex is under active development. Until version 1.0, breaking changes may occur in any release.
+
 
 ## License
 
