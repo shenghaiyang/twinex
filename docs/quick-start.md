@@ -4,25 +4,25 @@
 
 Pick your preferred method — see the [full installation guide](installation.md) for more options.
 
-=== Homebrew
+=== "Homebrew"
 
     ```sh
     brew install shenghaiyang/tap/twinex-cli
     ```
 
-=== Cargo
+=== "Cargo"
 
     ```sh
     cargo install twinex-cli
     ```
 
-=== Shell
+=== "Shell"
 
     ```sh
     curl --proto '=https' --tlsv1.2 -LsSf https://github.com/shenghaiyang/twinex/releases/latest/download/twinex-cli-installer.sh | sh
     ```
 
-=== PowerShell
+=== "PowerShell"
 
     ```powershell
     powershell -ExecutionPolicy Bypass -c "irm https://github.com/shenghaiyang/twinex/releases/latest/download/twinex-cli-installer.ps1 | iex"
