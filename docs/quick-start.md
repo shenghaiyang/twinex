@@ -2,15 +2,38 @@
 
 ## Installation
 
-```sh
-cargo install twinex-cli
-```
+Pick your preferred method — see the [full installation guide](installation.md) for more options.
+
+=== Homebrew
+
+    ```sh
+    brew install shenghaiyang/tap/twinex-cli
+    ```
+
+=== Cargo
+
+    ```sh
+    cargo install twinex-cli
+    ```
+
+=== Shell
+
+    ```sh
+    curl --proto '=https' --tlsv1.2 -LsSf https://github.com/shenghaiyang/twinex/releases/latest/download/twinex-cli-installer.sh | sh
+    ```
+
+=== PowerShell
+
+    ```powershell
+    powershell -ExecutionPolicy Bypass -c "irm https://github.com/shenghaiyang/twinex/releases/latest/download/twinex-cli-installer.ps1 | iex"
+    ```
+
 
 ## The Twine File Format
 
 A Twine file is a plain text file that stores all your app's translations in one place. It uses indentation to define structure:
 
-```
+```ini
 [[Section Name]]
     [key]
         comment = Developer notes about this key
