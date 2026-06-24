@@ -10,13 +10,11 @@ Copyright &copy; 2026 shenghaiyang
 """
 nav = [
     { "Home" = "index.md" },
-    { "Getting Started" = [
-        { "Quick Start" = "quick-start.md" },
-        { "Installation" = "installation.md" },
-        { "Basic Workflow" = "basic-workflow.md" },
-    ] },
     { "Docs" = [
+        { "Quick Start" = "quick-start.md" },
         { "Overview" = "usage.md" },
+        { "Twine File Format" = "twine-file-format.md" },
+        { "Installation" = "installation.md" },
         { "Generate" = "generate.md" },
         { "Consume" = "consume.md" },
         { "Validate" = "validate.md" },
