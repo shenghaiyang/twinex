@@ -12,7 +12,6 @@ nav = [
     { "Home" = "index.md" },
     { "Docs" = [
         { "Quick Start" = "quick-start.md" },
-        { "Overview" = "usage.md" },
         { "Twine File Format" = "twine-file-format.md" },
         { "Installation" = "installation.md" },
         { "Generate" = "generate.md" },
