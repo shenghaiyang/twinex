@@ -32,16 +32,4 @@ pub enum TwinexError {
     Validation(String),
 }
 
-impl From<String> for TwinexError {
-    fn from(s: String) -> Self {
-        TwinexError::Format(s)
-    }
-}
-
-impl From<&str> for TwinexError {
-    fn from(s: &str) -> Self {
-        TwinexError::Format(s.to_string())
-    }
-}
-
 pub type Result<T> = std::result::Result<T, TwinexError>;

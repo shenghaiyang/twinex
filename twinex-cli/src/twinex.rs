@@ -2,327 +2,305 @@ use std::fs;
 use std::io::Write;
 use std::path::Path;
 
+use crate::encoding;
 use crate::error::{Result, TwinexError};
 use crate::format::{FormatOptions, Registry};
 use crate::model::TwineFile;
 use crate::twinex_params::{ConsumeParams, GenerateParams, ValidateParams};
 
-pub struct Twinex;
+// ── Generate ──────────────────────────────────────────────────
 
-impl Twinex {
-    // ── Generate ──────────────────────────────────────────────
+pub fn generate(params: &GenerateParams) -> Result<()> {
+    let twine = read_twine_file(&params.twine_file, params.developer_language.as_deref())?;
+    let options = make_format_options(params);
 
-    pub fn generate(&self, params: &GenerateParams) -> Result<()> {
-        let twine = read_twine_file(&params.twine_file, params.developer_language.as_deref())?;
-        let options = self.make_format_options(params);
-
-        if params.validate {
-            validate_twine_file(&twine, false)?;
-        }
-
-        if params.archive {
-            self.generate_archive_impl(&twine, &options, params)
-        } else if params.all {
-            self.generate_all_impl(&twine, &options, params)
-        } else {
-            self.generate_file_impl(&twine, &options, params)
-        }
+    if params.validate {
+        validate_twine_file(&twine, false)?;
     }
 
-    fn generate_file_impl(
-        &self,
-        twine: &TwineFile,
-        options: &FormatOptions,
-        params: &GenerateParams,
-    ) -> Result<()> {
-        let lang = params.languages.first().map(|s| s.as_str());
-        let formatter =
-            resolve_formatter(params.format.as_deref(), Some(&params.output_path), lang)?;
-        let lang = lang
-            .map(|l| l.to_string())
-            .or_else(|| formatter.detect_language(&params.output_path))
-            .ok_or_else(|| {
-                TwinexError::InvalidArgument(format!(
-                    "Unable to determine language for {}. Try --lang.",
-                    params.output_path
-                ))
-            })?;
-
-        let output = formatter
-            .format(&lang, twine, options)?
-            .ok_or(TwinexError::NothingToGenerate)?;
-
-        write_file(&params.output_path, &output, params.encoding.as_deref())?;
-        if !params.quiet {
-            println!("Generated {}", params.output_path);
-        }
-        Ok(())
+    if params.archive {
+        generate_archive_impl(&twine, &options, params)
+    } else if params.all {
+        generate_all_impl(&twine, &options, params)
+    } else {
+        generate_file_impl(&twine, &options, params)
     }
+}
 
-    fn generate_all_impl(
-        &self,
-        twine: &TwineFile,
-        options: &FormatOptions,
-        params: &GenerateParams,
-    ) -> Result<()> {
-        let path = Path::new(&params.output_path);
-        if !path.is_dir() {
-            if params.create_folders {
-                fs::create_dir_all(path).map_err(|e| {
-                    TwinexError::Io(std::io::Error::other(format!(
-                        "Cannot create {}: {}",
-                        params.output_path, e
-                    )))
-                })?;
-            } else {
-                return Err(TwinexError::InvalidArgument(format!(
-                    "Directory does not exist: {}",
-                    params.output_path
-                )));
-            }
-        }
+fn generate_file_impl(
+    twine: &TwineFile,
+    options: &FormatOptions,
+    params: &GenerateParams,
+) -> Result<()> {
+    let lang = params.languages.first().map(|s| s.as_str());
+    let formatter = resolve_formatter(params.format.as_deref(), Some(&params.output_path), lang)?;
+    let lang = lang
+        .map(|l| l.to_string())
+        .or_else(|| formatter.detect_language(&params.output_path))
+        .ok_or_else(|| {
+            TwinexError::InvalidArgument(format!(
+                "Unable to determine language for {}. Try --lang.",
+                params.output_path
+            ))
+        })?;
 
-        let formatter =
-            resolve_formatter(params.format.as_deref(), Some(&params.output_path), None)?;
-        let file_name = params
-            .file_name
-            .as_deref()
-            .unwrap_or(formatter.default_file_name());
+    let output = formatter
+        .format(&lang, twine, options)?
+        .ok_or(TwinexError::NothingToGenerate)?;
 
+    encoding::write_file(&params.output_path, &output, params.encoding.as_deref())?;
+    if !params.quiet {
+        println!("Generated {}", params.output_path);
+    }
+    Ok(())
+}
+
+fn generate_all_impl(
+    twine: &TwineFile,
+    options: &FormatOptions,
+    params: &GenerateParams,
+) -> Result<()> {
+    let path = Path::new(&params.output_path);
+    if !path.is_dir() {
         if params.create_folders {
-            for lang in &twine.language_codes {
-                let lang_dir = formatter.output_dir_for_lang(lang.as_str());
-                let dir = path.join(&lang_dir);
-                fs::create_dir_all(&dir).map_err(|e| {
-                    TwinexError::Io(std::io::Error::other(format!(
-                        "Cannot create {}: {}",
-                        dir.display(),
-                        e
-                    )))
-                })?;
+            fs::create_dir_all(path).map_err(|e| {
+                TwinexError::Io(std::io::Error::other(format!(
+                    "Cannot create {}: {}",
+                    params.output_path, e
+                )))
+            })?;
+        } else {
+            return Err(TwinexError::InvalidArgument(format!(
+                "Directory does not exist: {}",
+                params.output_path
+            )));
+        }
+    }
+
+    let formatter = resolve_formatter(params.format.as_deref(), Some(&params.output_path), None)?;
+    let file_name = params
+        .file_name
+        .as_deref()
+        .unwrap_or(formatter.default_file_name());
+
+    if params.create_folders {
+        for lang in &twine.language_codes {
+            let lang_dir = formatter.output_dir_for_lang(lang.as_str());
+            let dir = path.join(&lang_dir);
+            fs::create_dir_all(&dir).map_err(|e| {
+                TwinexError::Io(std::io::Error::other(format!(
+                    "Cannot create {}: {}",
+                    dir.display(),
+                    e
+                )))
+            })?;
+            generate_one_file(
+                &*formatter,
+                twine,
+                options,
+                lang.as_str(),
+                &dir.join(file_name),
+                params.quiet,
+                params.encoding.as_deref(),
+            )?;
+        }
+    } else {
+        let mut found = false;
+        for entry in fs::read_dir(path)? {
+            let entry = entry?;
+            let dir = entry.path();
+            if !dir.is_dir() {
+                continue;
+            }
+            if let Some(lang) = formatter.detect_language(dir.to_str().unwrap_or("")) {
+                found = true;
+                let out = dir.join(file_name);
                 generate_one_file(
                     &*formatter,
                     twine,
                     options,
-                    lang.as_str(),
-                    &dir.join(file_name),
+                    &lang,
+                    &out,
                     params.quiet,
                     params.encoding.as_deref(),
                 )?;
             }
-        } else {
-            let mut found = false;
-            for entry in fs::read_dir(path)? {
-                let entry = entry?;
-                let dir = entry.path();
-                if !dir.is_dir() {
-                    continue;
-                }
-                if let Some(lang) = formatter.detect_language(dir.to_str().unwrap_or("")) {
-                    found = true;
-                    let out = dir.join(file_name);
-                    generate_one_file(
-                        &*formatter,
-                        twine,
-                        options,
-                        &lang,
-                        &out,
-                        params.quiet,
-                        params.encoding.as_deref(),
-                    )?;
-                }
-            }
-            if !found {
-                return Err(TwinexError::InvalidArgument(format!(
-                    "No languages found at {}",
-                    params.output_path
-                )));
-            }
         }
-        Ok(())
-    }
-
-    fn generate_archive_impl(
-        &self,
-        twine: &TwineFile,
-        options: &FormatOptions,
-        params: &GenerateParams,
-    ) -> Result<()> {
-        let format_name = params.format.as_deref().ok_or_else(|| {
-            TwinexError::InvalidArgument("--format is required for archive generation".into())
-        })?;
-        let formatter = Registry::get(format_name).ok_or_else(|| {
-            TwinexError::InvalidArgument(format!("Unknown format: {}", format_name))
-        })?;
-
-        let file = fs::File::create(&params.output_path)?;
-        let mut zip = zip::ZipWriter::new(file);
-        let opts = zip::write::SimpleFileOptions::default()
-            .compression_method(zip::CompressionMethod::Deflated);
-
-        zip.add_directory("Locales/", opts)?;
-
-        for lang in &twine.language_codes {
-            if !params.languages.is_empty()
-                && !params.languages.contains(&lang.as_str().to_string())
-            {
-                continue;
-            }
-            let name = format!("{}{}", lang, formatter.extension());
-            match formatter.format(lang.as_str(), twine, options)? {
-                Some(content) => {
-                    zip.start_file(format!("Locales/{}", name), opts)?;
-                    zip.write_all(content.as_bytes())?;
-                    if !params.quiet {
-                        println!("Added {} to archive", name);
-                    }
-                }
-                None => {
-                    if !params.quiet {
-                        println!("Skipping {} — would be empty.", name);
-                    }
-                }
-            }
-        }
-        zip.finish()?;
-        Ok(())
-    }
-
-    // ── Consume ──────────────────────────────────────────────
-
-    pub fn consume(&self, params: &ConsumeParams) -> Result<()> {
-        let mut twine = read_twine_file(&params.twine_file, params.developer_language.as_deref())?;
-
-        if params.all {
-            self.consume_all_impl(&mut twine, params)
-        } else if params.input_path.ends_with(".zip") {
-            self.consume_archive_impl(&mut twine, params)
-        } else {
-            self.consume_file_impl(&mut twine, params)
-        }
-    }
-
-    fn consume_file_impl(&self, twine: &mut TwineFile, params: &ConsumeParams) -> Result<()> {
-        let lang = params.languages.first().map(|s| s.as_str());
-        read_localization_file(
-            twine,
-            &params.input_path,
-            lang,
-            params.format.as_deref(),
-            params.encoding.as_deref(),
-            &params.languages,
-        )?;
-        let out = params.output_path.as_deref().unwrap_or(&params.twine_file);
-        twine.write_to_path(out)?;
-        Ok(())
-    }
-
-    fn consume_all_impl(&self, twine: &mut TwineFile, params: &ConsumeParams) -> Result<()> {
-        if !Path::new(&params.input_path).is_dir() {
+        if !found {
             return Err(TwinexError::InvalidArgument(format!(
-                "Directory does not exist: {}",
-                params.input_path
+                "No languages found at {}",
+                params.output_path
             )));
         }
-        visit_dirs(
-            Path::new(&params.input_path),
-            twine,
-            params.format.as_deref(),
-            params.encoding.as_deref(),
-            &[],
-        )?;
-        let out = params.output_path.as_deref().unwrap_or(&params.twine_file);
-        twine.write_to_path(out)?;
+    }
+    Ok(())
+}
+
+fn generate_archive_impl(
+    twine: &TwineFile,
+    options: &FormatOptions,
+    params: &GenerateParams,
+) -> Result<()> {
+    let format_name = params.format.as_deref().ok_or_else(|| {
+        TwinexError::InvalidArgument("--format is required for archive generation".into())
+    })?;
+    let formatter = Registry::get(format_name)
+        .ok_or_else(|| TwinexError::InvalidArgument(format!("Unknown format: {}", format_name)))?;
+
+    let file = fs::File::create(&params.output_path)?;
+    let mut zip = zip::ZipWriter::new(file);
+    let opts = zip::write::SimpleFileOptions::default()
+        .compression_method(zip::CompressionMethod::Deflated);
+
+    zip.add_directory("Locales/", opts)?;
+
+    for lang in &twine.language_codes {
+        if !params.languages.is_empty() && !params.languages.contains(&lang.as_str().to_string()) {
+            continue;
+        }
+        let name = format!("{}{}", lang, formatter.extension());
+        match formatter.format(lang.as_str(), twine, options)? {
+            Some(content) => {
+                zip.start_file(format!("Locales/{}", name), opts)?;
+                zip.write_all(content.as_bytes())?;
+                if !params.quiet {
+                    println!("Added {} to archive", name);
+                }
+            }
+            None => {
+                if !params.quiet {
+                    println!("Skipping {} — would be empty.", name);
+                }
+            }
+        }
+    }
+    zip.finish()?;
+    Ok(())
+}
+
+// ── Consume ──────────────────────────────────────────────────
+
+pub fn consume(params: &ConsumeParams) -> Result<()> {
+    let mut twine = read_twine_file(&params.twine_file, params.developer_language.as_deref())?;
+
+    if params.all {
+        consume_all_impl(&mut twine, params)
+    } else if params.input_path.ends_with(".zip") {
+        consume_archive_impl(&mut twine, params)
+    } else {
+        consume_file_impl(&mut twine, params)
+    }
+}
+
+fn consume_file_impl(twine: &mut TwineFile, params: &ConsumeParams) -> Result<()> {
+    let lang = params.languages.first().map(|s| s.as_str());
+    read_localization_file(
+        twine,
+        &params.input_path,
+        lang,
+        params.format.as_deref(),
+        params.encoding.as_deref(),
+        &params.languages,
+    )?;
+    let out = params.output_path.as_deref().unwrap_or(&params.twine_file);
+    twine.write_to_path(out)?;
+    Ok(())
+}
+
+fn consume_all_impl(twine: &mut TwineFile, params: &ConsumeParams) -> Result<()> {
+    if !Path::new(&params.input_path).is_dir() {
+        return Err(TwinexError::InvalidArgument(format!(
+            "Directory does not exist: {}",
+            params.input_path
+        )));
+    }
+    visit_dirs(
+        Path::new(&params.input_path),
+        twine,
+        params.format.as_deref(),
+        params.encoding.as_deref(),
+        &[],
+    )?;
+    let out = params.output_path.as_deref().unwrap_or(&params.twine_file);
+    twine.write_to_path(out)?;
+    Ok(())
+}
+
+fn consume_archive_impl(twine: &mut TwineFile, params: &ConsumeParams) -> Result<()> {
+    if !Path::new(&params.input_path).is_file() {
+        return Err(TwinexError::InvalidArgument(format!(
+            "File does not exist: {}",
+            params.input_path
+        )));
+    }
+    let file = fs::File::open(&params.input_path)?;
+    let mut archive = zip::ZipArchive::new(file)?;
+    let mut errors = false;
+
+    for i in 0..archive.len() {
+        let mut entry = archive.by_index(i)?;
+        let name = entry.name().to_string();
+        if name.ends_with('/') {
+            continue;
+        }
+        if Path::new(&name)
+            .file_name()
+            .and_then(|n| n.to_str())
+            .is_some_and(|n| n.starts_with('.'))
+        {
+            continue;
+        }
+        let mut content = String::new();
+        std::io::Read::read_to_string(&mut entry, &mut content)?;
+
+        if let Err(e) =
+            read_localization_from_content(twine, &name, &content, params.format.as_deref(), &[])
+        {
+            eprintln!("{}", e);
+            errors = true;
+        }
+    }
+    let out = params.output_path.as_deref().unwrap_or(&params.twine_file);
+    twine.write_to_path(out)?;
+    if errors {
+        Err(TwinexError::Format(
+            "At least one file could not be consumed".into(),
+        ))
+    } else {
         Ok(())
     }
+}
 
-    fn consume_archive_impl(&self, twine: &mut TwineFile, params: &ConsumeParams) -> Result<()> {
-        if !Path::new(&params.input_path).is_file() {
-            return Err(TwinexError::InvalidArgument(format!(
-                "File does not exist: {}",
-                params.input_path
-            )));
-        }
-        let file = fs::File::open(&params.input_path)?;
-        let mut archive = zip::ZipArchive::new(file)?;
-        let mut errors = false;
+// ── Validate ──────────────────────────────────────────────────
 
-        for i in 0..archive.len() {
-            let mut entry = archive.by_index(i)?;
-            let name = entry.name().to_string();
-            if name.ends_with('/') {
-                continue;
-            }
-            if Path::new(&name)
-                .file_name()
-                .and_then(|n| n.to_str())
-                .is_some_and(|n| n.starts_with('.'))
-            {
-                continue;
-            }
-            let mut content = String::new();
-            std::io::Read::read_to_string(&mut entry, &mut content)?;
-
-            if let Err(e) = read_localization_from_content(
-                twine,
-                &name,
-                &content,
-                params.format.as_deref(),
-                &[],
-            ) {
-                eprintln!("{}", e);
-                errors = true;
-            }
-        }
-        let out = params.output_path.as_deref().unwrap_or(&params.twine_file);
-        twine.write_to_path(out)?;
-        if errors {
-            Err(TwinexError::Format(
-                "At least one file could not be consumed".into(),
-            ))
-        } else {
-            Ok(())
-        }
+pub fn validate(params: &ValidateParams) -> Result<()> {
+    let twine = read_twine_file(&params.twine_file, params.developer_language.as_deref())?;
+    validate_twine_file(&twine, params.pedantic)?;
+    if !params.quiet {
+        println!("{} is valid.", params.twine_file);
     }
-
-    // ── Validate ──────────────────────────────────────────────
-
-    pub fn validate(&self, params: &ValidateParams) -> Result<()> {
-        let twine = read_twine_file(&params.twine_file, params.developer_language.as_deref())?;
-        validate_twine_file(&twine, params.pedantic)?;
-        if !params.quiet {
-            println!("{} is valid.", params.twine_file);
-        }
-        Ok(())
-    }
-
-    // ── Helpers ───────────────────────────────────────────────
-
-    fn make_format_options(&self, params: &GenerateParams) -> FormatOptions {
-        FormatOptions {
-            tags: wrap_tags(params.tags.clone()),
-            untagged: params.untagged,
-            include: crate::format::IncludeMode::parse(&params.include),
-            developer_language: params.developer_language.clone(),
-            escape_all_tags: params.escape_all_tags,
-        }
-    }
+    Ok(())
 }
 
 // ── Free helpers ──────────────────────────────────────────────
 
 fn read_twine_file(path: &str, dev_lang: Option<&str>) -> Result<TwineFile> {
     let mut twine = TwineFile::new();
-    twine.read_from_path(path).map_err(|e| {
-        TwinexError::Io(std::io::Error::other(format!(
-            "Failed to read twine file: {}: {}",
-            path, e
-        )))
-    })?;
+    twine.read_from_path(path)?;
     if let Some(lang) = dev_lang {
         twine.set_developer_language(&crate::model::Lang::new(lang));
     }
     Ok(twine)
+}
+
+fn make_format_options(params: &GenerateParams) -> FormatOptions {
+    FormatOptions {
+        tags: wrap_tags(params.tags.clone()),
+        untagged: params.untagged,
+        include: crate::format::IncludeMode::parse(&params.include),
+        developer_language: params.developer_language.clone(),
+        escape_all_tags: params.escape_all_tags,
+    }
 }
 
 fn wrap_tags(tags: Vec<String>) -> Vec<Vec<String>> {
@@ -354,7 +332,7 @@ fn generate_one_file(
 ) -> Result<()> {
     match formatter.format(lang, twine, options)? {
         Some(content) => {
-            write_file(output.to_str().unwrap(), &content, encoding)?;
+            encoding::write_file(output.to_str().unwrap(), &content, encoding)?;
             if !quiet {
                 println!("Generated {}", output.display());
             }
@@ -382,7 +360,7 @@ fn read_localization_file(
             path
         )));
     }
-    let content = read_file_with_encoding(path, encoding)?;
+    let content = encoding::read_file_with_encoding(path, encoding)?;
     read_localization_from_content(twine, path, &content, format, languages)
 }
 
@@ -421,22 +399,43 @@ fn visit_dirs(
     encoding: Option<&str>,
     languages: &[String],
 ) -> Result<()> {
+    let mut errors: Vec<String> = Vec::new();
+    visit_dirs_recursive(dir, twine, format, encoding, languages, &mut errors)?;
+    if errors.is_empty() {
+        Ok(())
+    } else {
+        Err(TwinexError::Format(format!(
+            "Encountered {} error(s) while consuming files:\n{}",
+            errors.len(),
+            errors.join("\n")
+        )))
+    }
+}
+
+fn visit_dirs_recursive(
+    dir: &Path,
+    twine: &mut TwineFile,
+    format: Option<&str>,
+    encoding: Option<&str>,
+    languages: &[String],
+    errors: &mut Vec<String>,
+) -> Result<()> {
     for entry in fs::read_dir(dir)? {
         let entry = entry?;
         let path = entry.path();
         if path.is_file() {
             if let Err(e) = read_localization_file(
                 twine,
-                path.to_str().unwrap(),
+                path.to_str().unwrap_or(""),
                 None,
                 format,
                 encoding,
                 languages,
             ) {
-                eprintln!("{}", e);
+                errors.push(format!("{}: {}", path.display(), e));
             }
         } else if path.is_dir() {
-            visit_dirs(&path, twine, format, encoding, languages)?;
+            visit_dirs_recursive(&path, twine, format, encoding, languages, errors)?;
         }
     }
     Ok(())
@@ -523,62 +522,4 @@ fn validate_twine_file(twine: &TwineFile, pedantic: bool) -> Result<()> {
         return Err(TwinexError::Validation(errors.join("\n\n")));
     }
     Ok(())
-}
-
-fn read_file_with_encoding(path: &str, encoding: Option<&str>) -> Result<String> {
-    let enc = encoding.unwrap_or("UTF-8");
-    let bytes = fs::read(path)?;
-    let start = if bytes.len() >= 2 {
-        match &bytes[..2] {
-            [0xFE, 0xFF] | [0xFF, 0xFE] => 2,
-            _ => 0,
-        }
-    } else {
-        0
-    };
-    let content = &bytes[start..];
-    match enc.to_uppercase().as_str() {
-        "UTF-8" | "UTF8" => String::from_utf8(content.to_vec())
-            .map_err(|e| TwinexError::Format(format!("Invalid UTF-8: {}", e))),
-        "UTF-16BE" | "UTF16BE" => {
-            let u16: Vec<u16> = content
-                .chunks(2)
-                .map(|c| u16::from_be_bytes([c[0], c[1]]))
-                .collect();
-            String::from_utf16(&u16).map_err(|_| TwinexError::Format("Invalid UTF-16".into()))
-        }
-        "UTF-16LE" | "UTF16LE" => {
-            let u16: Vec<u16> = content
-                .chunks(2)
-                .map(|c| u16::from_le_bytes([c[0], c[1]]))
-                .collect();
-            String::from_utf16(&u16).map_err(|_| TwinexError::Format("Invalid UTF-16".into()))
-        }
-        _ => String::from_utf8(content.to_vec())
-            .map_err(|e| TwinexError::Format(format!("Invalid encoding: {}", e))),
-    }
-}
-
-fn write_file(path: &str, content: &str, encoding: Option<&str>) -> Result<()> {
-    let enc = encoding.unwrap_or("UTF-8");
-    match enc.to_uppercase().as_str() {
-        "UTF-8" | "UTF8" => Ok(fs::write(path, content)?),
-        "UTF-16BE" | "UTF16BE" => {
-            let u16: Vec<u16> = content.encode_utf16().collect();
-            let mut bytes = vec![0xFE, 0xFF];
-            for c in &u16 {
-                bytes.extend_from_slice(&c.to_be_bytes());
-            }
-            Ok(fs::write(path, bytes)?)
-        }
-        "UTF-16LE" | "UTF16LE" => {
-            let u16: Vec<u16> = content.encode_utf16().collect();
-            let mut bytes = vec![0xFF, 0xFE];
-            for c in &u16 {
-                bytes.extend_from_slice(&c.to_le_bytes());
-            }
-            Ok(fs::write(path, bytes)?)
-        }
-        _ => Ok(fs::write(path, content)?),
-    }
 }

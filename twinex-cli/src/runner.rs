@@ -1,9 +1,8 @@
 use crate::cli::{CliArgs, Command};
-use crate::twinex::Twinex;
+use crate::twinex;
 use crate::twinex_params::{ConsumeParams, GenerateParams, ValidateParams};
 
 pub fn run(args: CliArgs) -> anyhow::Result<()> {
-    let twinex = Twinex;
     match args.command {
         Command::Generate {
             twine_file,
@@ -15,7 +14,7 @@ pub fn run(args: CliArgs) -> anyhow::Result<()> {
             create_folders,
             file_name,
             validate,
-        } => Ok(twinex.generate(&GenerateParams {
+        } => Ok(twinex::generate(&GenerateParams {
             twine_file,
             output_path,
             developer_language: gen.developer_language,
@@ -39,7 +38,7 @@ pub fn run(args: CliArgs) -> anyhow::Result<()> {
             con,
             all,
             languages,
-        } => Ok(twinex.consume(&ConsumeParams {
+        } => Ok(twinex::consume(&ConsumeParams {
             twine_file,
             input_path,
             consume_all: con.consume_all,
@@ -58,7 +57,7 @@ pub fn run(args: CliArgs) -> anyhow::Result<()> {
             developer_language,
             pedantic,
             quiet,
-        } => Ok(twinex.validate(&ValidateParams {
+        } => Ok(twinex::validate(&ValidateParams {
             twine_file,
             developer_language,
             pedantic,
