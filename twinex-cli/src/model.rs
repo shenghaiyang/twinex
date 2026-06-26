@@ -6,9 +6,7 @@ use std::path::Path;
 
 use serde::{Deserialize, Serialize};
 
-use crate::error::Result;
-
-use crate::error::TwinexError;
+use crate::error::{Result, TwinexError};
 
 // ── Newtype wrappers ──────────────────────────────────────────
 
@@ -126,14 +124,24 @@ impl Definition {
             return include_untagged;
         }
         tags.iter().all(|tag_set| {
-            let (regular, negated): (Vec<_>, Vec<_>) =
-                tag_set.iter().partition(|t| !t.starts_with('~'));
-            let negated: Vec<String> = negated.iter().map(|t| t[1..].to_string()).collect();
-            let matches_regular =
-                !regular.is_empty() && regular.iter().any(|t| self.tags.contains(t));
-            let matches_negated =
-                !negated.is_empty() && negated.iter().all(|t| !self.tags.contains(t));
-            matches_regular || matches_negated
+            let mut has_positive = false;
+            let mut matches_positive = false;
+            let mut has_negated = false;
+            let mut matches_negative = true;
+            for t in tag_set {
+                if let Some(neg) = t.strip_prefix('~') {
+                    has_negated = true;
+                    if self.tags.contains(&neg.to_string()) {
+                        matches_negative = false;
+                    }
+                } else {
+                    has_positive = true;
+                    if self.tags.contains(t) {
+                        matches_positive = true;
+                    }
+                }
+            }
+            (has_positive && matches_positive) || (has_negated && matches_negative)
         })
     }
 }
@@ -240,58 +248,53 @@ impl TwineFile {
             } else {
                 // Key-value pair: k = v
                 if let Some(caps) = RegexStore::key_value().captures(line) {
-                    let key = caps[1].trim();
+                    let key = caps[1].trim().to_string();
                     let mut value = caps[2].trim().to_string();
 
                     if value.starts_with('`') && value.ends_with('`') {
                         value = value[1..value.len() - 1].to_string();
                     }
 
-                    let def = self
-                        .sections
-                        .last_mut()
-                        .and_then(|s| s.definitions.last_mut())
+                    // Use index-based access to avoid borrow conflicts
+                    let sec_idx =
+                        self.sections
+                            .len()
+                            .checked_sub(1)
+                            .ok_or_else(|| TwinexError::Parse {
+                                path: path_hint.to_string(),
+                                line: line_num,
+                                message: "No definition to attach property to".to_string(),
+                            })?;
+                    let def_idx = self.sections[sec_idx]
+                        .definitions
+                        .len()
+                        .checked_sub(1)
                         .ok_or_else(|| TwinexError::Parse {
                             path: path_hint.to_string(),
                             line: line_num,
                             message: "No definition to attach property to".to_string(),
                         })?;
 
-                    match key {
-                        "comment" => def.comment = Some(value),
-                        "tags" => {
-                            def.tags = value.split(',').map(|s| s.trim().to_string()).collect();
+                    // Handle non-translation keys first
+                    if key == "comment" {
+                        self.sections[sec_idx].definitions[def_idx].comment = Some(value);
+                    } else if key == "tags" {
+                        self.sections[sec_idx].definitions[def_idx].tags =
+                            value.split(',').map(|s| s.trim().to_string()).collect();
+                    } else if key == "ref" {
+                        if !value.is_empty() {
+                            self.sections[sec_idx].definitions[def_idx].reference_key =
+                                Some(Key::new(value));
                         }
-                        "ref" => {
-                            if !value.is_empty() {
-                                def.reference_key = Some(Key::new(value));
-                            }
+                    } else {
+                        // Translation key
+                        let lang = Lang::new(&key);
+                        if !self.language_codes.contains(&lang) {
+                            self.add_language(&lang);
                         }
-                        _ => {
-                            let lang = Lang::new(key);
-                            if !self.language_codes.contains(&lang) {
-                                // Need to drop def first to avoid borrow conflict
-                                let need_add = !self.language_codes.contains(&lang);
-                                let _ = def;
-                                if need_add {
-                                    self.add_language(&lang);
-                                }
-                                // Re-acquire
-                                let def2 = self
-                                    .sections
-                                    .last_mut()
-                                    .and_then(|s| s.definitions.last_mut())
-                                    .ok_or_else(|| TwinexError::Parse {
-                                        path: path_hint.to_string(),
-                                        line: line_num,
-                                        message: "No definition to attach translation to"
-                                            .to_string(),
-                                    })?;
-                                def2.translations.insert(lang, value);
-                            } else {
-                                def.translations.insert(lang, value);
-                            }
-                        }
+                        self.sections[sec_idx].definitions[def_idx]
+                            .translations
+                            .insert(lang, value);
                     }
                     parsed = true;
                 }
@@ -323,40 +326,39 @@ impl TwineFile {
 
     /// Write the Twine data file to any `Write`.
     pub fn write<W: Write>(&self, writer: &mut W) -> Result<()> {
-        let mut w = BufWriter::new(writer);
         let dev_lang = self.language_codes.first();
 
         for section in &self.sections {
-            writeln!(w, "\n[[{}]]", section.name).ok();
+            writeln!(writer, "\n[[{}]]", section.name).ok();
 
             for def in &section.definitions {
-                writeln!(w, "\t[{}]", def.key).ok();
+                writeln!(writer, "\t[{}]", def.key).ok();
 
                 if let Some(ref ref_key) = def.reference_key {
-                    writeln!(w, "\t\tref = {}", ref_key).ok();
+                    writeln!(writer, "\t\tref = {}", ref_key).ok();
                 }
                 if !def.tags.is_empty() {
-                    writeln!(w, "\t\ttags = {}", def.tags.join(",")).ok();
+                    writeln!(writer, "\t\ttags = {}", def.tags.join(",")).ok();
                 }
                 if let Some(ref comment) = def.comment {
                     if !comment.is_empty() {
-                        writeln!(w, "\t\tcomment = {}", comment).ok();
+                        writeln!(writer, "\t\tcomment = {}", comment).ok();
                     }
                 }
 
                 if let Some(dev) = dev_lang {
                     if let Some(value) = def.translations.get(dev) {
-                        write_value(&mut w, dev, value);
+                        write_value(writer, dev, value);
                     }
                 }
                 for lang in self.language_codes.iter().skip(1) {
                     if let Some(value) = def.translations.get(lang) {
-                        write_value(&mut w, lang, value);
+                        write_value(writer, lang, value);
                     }
                 }
             }
         }
-        w.flush().map_err(TwinexError::from)
+        writer.flush().map_err(TwinexError::from)
     }
 }
 
@@ -367,31 +369,6 @@ impl Default for TwineFile {
 }
 
 // ── Helpers ───────────────────────────────────────────────────
-
-struct BufWriter<W: Write> {
-    inner: W,
-    pos: usize,
-}
-
-impl<W: Write> BufWriter<W> {
-    fn new(inner: W) -> Self {
-        BufWriter { inner, pos: 0 }
-    }
-    fn flush(&mut self) -> std::io::Result<()> {
-        self.inner.flush()
-    }
-}
-
-impl<W: Write> Write for BufWriter<W> {
-    fn write(&mut self, buf: &[u8]) -> std::io::Result<usize> {
-        let n = self.inner.write(buf)?;
-        self.pos += n;
-        Ok(n)
-    }
-    fn flush(&mut self) -> std::io::Result<()> {
-        self.inner.flush()
-    }
-}
 
 fn write_value(w: &mut impl Write, lang: &Lang, value: &str) {
     let formatted = if value.starts_with(' ')

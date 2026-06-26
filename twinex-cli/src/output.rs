@@ -2,13 +2,13 @@ use crate::format::FormatOptions;
 use crate::model::{Definition, Lang, Section, TwineFile};
 
 /// Processes a TwineFile to produce a filtered output for a given language.
-pub struct OutputProcessor {
-    twine_file: TwineFile,
-    options: FormatOptions,
+pub struct OutputProcessor<'a> {
+    twine_file: &'a TwineFile,
+    options: &'a FormatOptions,
 }
 
-impl OutputProcessor {
-    pub fn new(twine_file: TwineFile, options: FormatOptions) -> Self {
+impl<'a> OutputProcessor<'a> {
+    pub fn new(twine_file: &'a TwineFile, options: &'a FormatOptions) -> Self {
         OutputProcessor {
             twine_file,
             options,

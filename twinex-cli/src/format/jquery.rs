@@ -38,7 +38,7 @@ impl Formatter for JQueryFormatter {
         twine_file: &TwineFile,
         options: &FormatOptions,
     ) -> Result<Option<String>> {
-        let processor = OutputProcessor::new(twine_file.clone(), options.clone());
+        let processor = OutputProcessor::new(twine_file, options);
         let processed = processor.process(lang);
 
         let pairs: Vec<String> = processed

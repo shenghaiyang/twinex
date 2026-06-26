@@ -84,9 +84,9 @@ pub enum IncludeMode {
 impl IncludeMode {
     pub fn parse(s: &str) -> Self {
         match s {
-            "translated" => IncludeMode::Translated,
-            "untranslated" => IncludeMode::Untranslated,
-            _ => IncludeMode::All,
+            "translated" => Self::Translated,
+            "untranslated" => Self::Untranslated,
+            _ => Self::All,
         }
     }
 }
@@ -99,54 +99,6 @@ impl Default for FormatOptions {
             include: IncludeMode::All,
             developer_language: None,
             escape_all_tags: false,
-        }
-    }
-}
-
-impl FormatOptions {
-    pub fn builder() -> FormatOptionsBuilder {
-        FormatOptionsBuilder::default()
-    }
-}
-
-/// Builder for `FormatOptions`.
-#[derive(Default)]
-pub struct FormatOptionsBuilder {
-    tags: Vec<Vec<String>>,
-    untagged: bool,
-    include: IncludeMode,
-    developer_language: Option<String>,
-    escape_all_tags: bool,
-}
-
-impl FormatOptionsBuilder {
-    pub fn tags(mut self, tags: Vec<Vec<String>>) -> Self {
-        self.tags = tags;
-        self
-    }
-    pub fn untagged(mut self, yes: bool) -> Self {
-        self.untagged = yes;
-        self
-    }
-    pub fn include(mut self, mode: IncludeMode) -> Self {
-        self.include = mode;
-        self
-    }
-    pub fn developer_language(mut self, lang: Option<String>) -> Self {
-        self.developer_language = lang;
-        self
-    }
-    pub fn escape_all_tags(mut self, yes: bool) -> Self {
-        self.escape_all_tags = yes;
-        self
-    }
-    pub fn build(self) -> FormatOptions {
-        FormatOptions {
-            tags: self.tags,
-            untagged: self.untagged,
-            include: self.include,
-            developer_language: self.developer_language,
-            escape_all_tags: self.escape_all_tags,
         }
     }
 }

@@ -8,7 +8,8 @@ use common::*;
 #[test]
 fn test_filter_all() {
     let tf = make_twine_file();
-    let processor = OutputProcessor::new(tf, FormatOptions::default());
+    let opts = FormatOptions::default();
+    let processor = OutputProcessor::new(&tf, &opts);
     let result = processor.process("fr");
     assert_eq!(result.sections[0].definitions.len(), 2);
 }
@@ -20,13 +21,11 @@ fn test_filter_translated_only() {
         .translations
         .remove(&Lang::new("fr"));
 
-    let processor = OutputProcessor::new(
-        tf,
-        FormatOptions {
-            include: IncludeMode::Translated,
-            ..Default::default()
-        },
-    );
+    let opts = FormatOptions {
+        include: IncludeMode::Translated,
+        ..Default::default()
+    };
+    let processor = OutputProcessor::new(&tf, &opts);
     let result = processor.process("fr");
     assert_eq!(result.sections[0].definitions.len(), 1);
     assert_eq!(result.sections[0].definitions[0].key.as_str(), "hello");
@@ -35,13 +34,11 @@ fn test_filter_translated_only() {
 #[test]
 fn test_filter_by_tags() {
     let tf = make_twine_file();
-    let processor = OutputProcessor::new(
-        tf,
-        FormatOptions {
-            tags: vec![vec!["greeting".to_string()]],
-            ..Default::default()
-        },
-    );
+    let opts = FormatOptions {
+        tags: vec![vec!["greeting".to_string()]],
+        ..Default::default()
+    };
+    let processor = OutputProcessor::new(&tf, &opts);
     let result = processor.process("en");
     assert_eq!(result.sections[0].definitions.len(), 1);
     assert_eq!(result.sections[0].definitions[0].key.as_str(), "hello");
@@ -54,7 +51,8 @@ fn test_fallback() {
         .translations
         .remove(&Lang::new("ja"));
 
-    let processor = OutputProcessor::new(tf, FormatOptions::default());
+    let opts = FormatOptions::default();
+    let processor = OutputProcessor::new(&tf, &opts);
     let result = processor.process("ja");
     let hello_def = result.sections[0]
         .definitions

@@ -71,7 +71,7 @@ impl Formatter for GettextFormatter {
             .first()
             .cloned()
             .unwrap_or_default();
-        let processor = OutputProcessor::new(twine_file.clone(), options.clone());
+        let processor = OutputProcessor::new(twine_file, options);
         let processed = processor.process(lang);
 
         let mut out = format!(

@@ -79,7 +79,7 @@ impl Formatter for AppleFormatter {
         twine_file: &TwineFile,
         options: &FormatOptions,
     ) -> Result<Option<String>> {
-        let processor = OutputProcessor::new(twine_file.clone(), options.clone());
+        let processor = OutputProcessor::new(twine_file, options);
         let processed = processor.process(lang);
 
         let mut out = format!(
