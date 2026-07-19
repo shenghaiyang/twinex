@@ -14,7 +14,7 @@ homepage = "https://github.com/shenghaiyang/twinex"
 readme = "README.md"
 
 [workspace.dependencies]
-anyhow = "=1.0.103"
+anyhow = "=1.0.104"
 clap = "=4.6.2"
 regex = "=1.13.1"
 serde = "=1.0.228"
