@@ -1,0 +1,12 @@
+[git]
+commit_parsers = [
+    { message = "^chore\\(ci\\)", group = "CI" },
+    { message = "^chore\\(deps\\)", group = "Dependencies" },
+    { message = "^doc", group = "Documentation"},
+    { message = "^feat", group = "Features"},
+    { message = "^fix", group = "Bug Fixes"},
+    { message = "^perf", group = "Performance"},
+    { message = "^refactor", group = "Refactor"},
+    { message = "^style", group = "Styling"},
+    { message = "^test", group = "Testing"},
+]
