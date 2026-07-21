@@ -4,7 +4,7 @@ resolver = "2"
 
 [workspace.package]
 description = "A localization code generator compatible with the Twine file format"
-version = "0.2.0"
+version = "0.3.0"
 edition = "2021"
 rust-version = "1.96.0"
 authors = ["shenghaiyang"]
